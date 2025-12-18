@@ -30,17 +30,24 @@
     h1{margin:0;font-size:16px}
     .sub{margin:0;color:var(--muted);font-size:12px}
 
+    .controls{display:flex;gap:10px;align-items:center;padding:0 16px 14px;flex-wrap:wrap}
+    input, select{
+      appearance:none; border:1px solid var(--line); background:rgba(255,255,255,.05); color:var(--txt);
+      padding:10px 12px; border-radius:12px; outline:none;
+    }
+    input{flex:1;min-width:220px}
+
     .tabs{display:flex;gap:8px;padding:0 16px 14px;flex-wrap:wrap}
     .tab{
       border:1px solid var(--line); background:rgba(255,255,255,.04);
       color:var(--txt); padding:10px 12px; border-radius:14px;
-      cursor:pointer; font-weight:600; font-size:13px
+      cursor:pointer; font-weight:650; font-size:13px
     }
-    .tab.active{
-      background:rgba(77,163,255,.18); border-color:rgba(77,163,255,.35)
-    }
+    .tab.active{background:rgba(77,163,255,.18); border-color:rgba(77,163,255,.35)}
 
-    main{padding:12px 16px 18px}
+    /* área rolável (estilo app) */
+    main.wrap{height:calc(100vh - 170px); overflow:auto; padding-top:12px}
+
     .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
 
     .card{
@@ -51,6 +58,8 @@
     @media (min-width:760px){ .card{grid-column:span 6} }
     @media (min-width:1050px){ .card{grid-column:span 4} }
 
+    .wide{grid-column:span 12}
+
     .icon{
       width:42px;height:42px;border-radius:14px;display:grid;place-items:center;
       background:rgba(77,163,255,.14);border:1px solid rgba(77,163,255,.22);
@@ -58,10 +67,13 @@
     }
     .meta{flex:1;min-width:0}
     .title{
-      margin:0 0 4px;font-weight:700;white-space:nowrap;
-      overflow:hidden;text-overflow:ellipsis
+      margin:0 0 4px;font-weight:750;
+      white-space:normal; overflow:visible; text-overflow:unset;
+      line-height:1.2
     }
-    .desc{margin:0;color:var(--muted);font-size:13px}
+    .desc{margin:0;color:var(--muted);font-size:13px;line-height:1.3}
+    .chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+    .chip{font-size:12px;color:var(--muted);border:1px solid var(--line);padding:4px 8px;border-radius:999px}
 
     .btn{
       display:inline-flex;gap:8px;align-items:center;text-decoration:none;
@@ -69,28 +81,43 @@
       background:rgba(77,163,255,.18);
       border:1px solid rgba(77,163,255,.35); color:var(--txt); margin-top:10px
     }
+    .btn.secondary{
+      background:rgba(255,255,255,.06);
+      border:1px solid var(--line);
+      margin-left:8px
+    }
+    .warn{color:#ffd28a}
+    code{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}
     footer{
-      padding:18px 16px;color:var(--muted);
+      padding:12px 16px;color:var(--muted);
       font-size:12px;text-align:center;border-top:1px solid var(--line)
     }
   </style>
 </head>
 
 <body>
-
 <header>
   <div class="top">
     <div class="brand">
       <div class="logo">📁</div>
       <div>
         <h1>Portal de Documentos</h1>
-        <p class="sub">Arquivos carregados automaticamente do GitHub</p>
+        <p class="sub">Lista automática (inclui subpastas) • GitHub Pages</p>
       </div>
     </div>
+    <div style="color:var(--muted);font-size:12px" id="repoTag"></div>
+  </div>
+
+  <div class="controls">
+    <input id="q" placeholder="Buscar por nome..." />
+    <select id="ext">
+      <option value="pdf">Mostrar: PDFs</option>
+      <option value="all">Mostrar: Tudo</option>
+    </select>
   </div>
 
   <div class="tabs">
-    <button class="tab active" data-tab="ordens_servico">Ordens de Serviço</button>
+    <button class="tab active" data-tab="ordens">Ordens de Serviço</button>
     <button class="tab" data-tab="boletins">Boletins</button>
     <button class="tab" data-tab="contatos">Contatos</button>
   </div>
@@ -101,93 +128,197 @@
 </main>
 
 <footer>
-  Basta enviar PDFs para as pastas do repositório — o site atualiza sozinho.
+  Para adicionar arquivos: faça upload nas pastas do repositório. O site atualiza sozinho.
 </footer>
 
 <script>
-const OWNER = "danielzavalhia-commits";
-const REPO  = "dani2";
+/** ====== CONFIG DO SEU REPO ====== */
+const OWNER  = "danielzavalhia-commits";
+const REPO   = "dani2";
 const BRANCH = "main";
 
+/**
+ * Pastas “raiz” de cada seção.
+ * Tudo dentro (inclusive subpastas) aparece.
+ */
 const SECTIONS = {
-  ordens_servico: [
-    { label: "Ordens de Serviço", path: "ordens_servico", icon: "🧰" }
+  ordens: [
+    { label: "Ordens de Serviço", root: "ordens_servico", icon: "🧰" }
   ],
   boletins: [
-    { label: "Boletins Técnicos", path: "boletins/tecnicos", icon: "🛠️" },
-    { label: "Boletins Mão de Obra", path: "boletins/mao_de_obra", icon: "👷" }
+    { label: "Boletins Técnicos", root: "boletins/tecnicos", icon: "🛠️" },
+    { label: "Boletins Mão de Obra", root: "boletins/mao_de_obra", icon: "👷" }
   ],
   contatos: [
-    { label: "Contatos", path: "contatos", icon: "👥" }
+    { label: "Contatos", root: "contatos", icon: "👥" }
   ]
 };
 
+/** ====== UI ====== */
 const grid = document.getElementById("grid");
-const tabs = document.querySelectorAll(".tab");
-let activeTab = "ordens_servico";
+const tabs = [...document.querySelectorAll(".tab")];
+const q = document.getElementById("q");
+const ext = document.getElementById("ext");
+document.getElementById("repoTag").textContent = `${OWNER}/${REPO}`;
 
-function prettify(name){
-  return name.replace(/\.[^/.]+$/, "")
-             .replace(/[_-]+/g," ")
-             .replace(/\s+/g," ")
-             .replace(/\b\w/g, c=>c.toUpperCase());
+/** ====== Helpers ====== */
+function prettifyPath(path){
+  const name = path.split("/").pop() || path;
+  const base = name.replace(/\.[^/.]+$/, "");
+  return base
+    .replace(/[_-]+/g," ")
+    .replace(/\s+/g," ")
+    .trim()
+    .replace(/\b\w/g, c=>c.toUpperCase());
+}
+function isPdf(path){ return path.toLowerCase().endsWith(".pdf"); }
+function startsWithFolder(filePath, folderRoot){
+  const a = filePath.replace(/^\/+/,"");
+  const b = folderRoot.replace(/^\/+/,"").replace(/\/+$/,"");
+  return a === b || a.startsWith(b + "/");
+}
+function pageHrefFor(filePath){
+  // abre via GitHub Pages (mais chance de abrir inline)
+  // exemplo: https://.../dani2/boletins/tecnicos/arquivo.pdf
+  return new URL(filePath.replace(/^\/+/,""), window.location.href).href;
+}
+function githubFileUrl(filePath){
+  return `https://github.com/${OWNER}/${REPO}/blob/${BRANCH}/${filePath.replace(/^\/+/,"")}`;
 }
 
-async function listFolder(path){
-  const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${path}?ref=${BRANCH}`;
-  const res = await fetch(url);
-  if(!res.ok) return [];
-  return res.json();
+/** ====== Cache da árvore do repo ====== */
+let TREE = null;
+
+async function getBranchSha(){
+  const url = `https://api.github.com/repos/${OWNER}/${REPO}/branches/${BRANCH}`;
+  const res = await fetch(url, { headers: { "Accept":"application/vnd.github+json" }});
+  if(!res.ok) throw new Error(`Não consegui ler a branch ${BRANCH} (HTTP ${res.status}).`);
+  const data = await res.json();
+  return data?.commit?.sha;
+}
+
+async function getRepoTree(){
+  if(TREE) return TREE;
+
+  const sha = await getBranchSha();
+  const url = `https://api.github.com/repos/${OWNER}/${REPO}/git/trees/${sha}?recursive=1`;
+  const res = await fetch(url, { headers: { "Accept":"application/vnd.github+json" }});
+  if(!res.ok) throw new Error(`Não consegui listar os arquivos (HTTP ${res.status}).`);
+  const data = await res.json();
+
+  // data.tree -> itens com { path, type: "blob" | "tree" }
+  TREE = (data.tree || []).filter(x => x.type === "blob").map(x => x.path);
+  return TREE;
+}
+
+/** ====== Render ====== */
+let activeTab = "ordens";
+
+function headerCard(title, subtitle, chips=[]){
+  return `
+    <div class="card wide">
+      <div class="icon">📂</div>
+      <div class="meta">
+        <p class="title">${title}</p>
+        <p class="desc">${subtitle}</p>
+        <div class="chips">${chips.map(c=>`<span class="chip">${c}</span>`).join("")}</div>
+      </div>
+    </div>
+  `;
+}
+
+function itemCard(icon, filePath){
+  const title = prettifyPath(filePath);
+  const href = pageHrefFor(filePath);
+  const gh  = githubFileUrl(filePath);
+  const chips = [
+    isPdf(filePath) ? "PDF" : "Arquivo",
+    filePath
+  ];
+  return `
+    <div class="card">
+      <div class="icon">📄</div>
+      <div class="meta">
+        <p class="title" title="${title}">${title}</p>
+        <p class="desc">${isPdf(filePath) ? "PDF" : "Arquivo"}</p>
+        <div class="chips">${chips.map(c=>`<span class="chip">${c}</span>`).join("")}</div>
+        <a class="btn" href="${href}" target="_blank" rel="noopener">Abrir →</a>
+        <a class="btn secondary" href="${gh}" target="_blank" rel="noopener">Ver no GitHub</a>
+      </div>
+    </div>
+  `;
+}
+
+function warnCard(msg){
+  return `
+    <div class="card wide">
+      <div class="meta">
+        <p class="title warn">⚠️ Aviso</p>
+        <p class="desc">${msg}</p>
+      </div>
+    </div>
+  `;
 }
 
 async function render(){
-  grid.innerHTML = "";
+  grid.innerHTML = headerCard(
+    activeTab === "boletins" ? "Boletins" :
+    activeTab === "ordens" ? "Ordens de Serviço" : "Contatos",
+    "Listando automaticamente todos os arquivos (inclusive dentro de subpastas).",
+    [
+      `Filtro: ${ext.value === "pdf" ? "PDFs" : "Tudo"}`,
+      q.value ? `Busca: "${q.value}"` : "Busca: (vazia)"
+    ]
+  );
 
-  for(const sec of SECTIONS[activeTab]){
-    const header = document.createElement("div");
-    header.className = "card";
-    header.style.gridColumn = "span 12";
-    header.innerHTML = `
-      <div class="icon">${sec.icon}</div>
-      <div class="meta">
-        <p class="title">${sec.label}</p>
-        <p class="desc">Pasta: /${sec.path}</p>
-      </div>
-    `;
-    grid.appendChild(header);
+  let allFiles;
+  try{
+    allFiles = await getRepoTree();
+  }catch(e){
+    grid.innerHTML += warnCard(e.message || String(e));
+    return;
+  }
 
-    const files = (await listFolder(sec.path))
-      .filter(f => f.type === "file" && f.name.toLowerCase().endsWith(".pdf"));
+  const query = (q.value || "").trim().toLowerCase();
+  const showOnlyPdf = (ext.value === "pdf");
+
+  for(const section of SECTIONS[activeTab]){
+    const root = section.root.replace(/\/+$/,"");
+    let files = allFiles.filter(p => startsWithFolder(p, root));
+
+    if(showOnlyPdf) files = files.filter(isPdf);
+
+    if(query){
+      files = files.filter(p => p.toLowerCase().includes(query));
+    }
+
+    files.sort((a,b)=>a.localeCompare(b,"pt-BR"));
+
+    grid.innerHTML += headerCard(
+      section.label,
+      `Pasta base: <code>/${root}</code> • Itens encontrados: <b>${files.length}</b>`,
+      [root]
+    );
 
     if(files.length === 0){
-      const empty = document.createElement("div");
-      empty.className = "card";
-      empty.innerHTML = `
-        <div class="meta">
-          <p class="title">Nenhum arquivo</p>
-          <p class="desc">Envie PDFs para esta pasta.</p>
+      grid.innerHTML += `
+        <div class="card wide">
+          <div class="meta">
+            <p class="title">Nenhum arquivo</p>
+            <p class="desc">Envie arquivos para <code>/${root}</code> (pode ser dentro de subpastas também).</p>
+          </div>
         </div>
       `;
-      grid.appendChild(empty);
       continue;
     }
 
-    files.sort((a,b)=>a.name.localeCompare(b.name,"pt-BR"));
-
-    files.forEach(f=>{
-      const card = document.createElement("div");
-      card.className = "card";
-      card.innerHTML = `
-        <div class="icon">📄</div>
-        <div class="meta">
-          <p class="title" title="${prettify(f.name)}">${prettify(f.name)}</p>
-          <p class="desc">PDF</p>
-          <a class="btn" href="${f.download_url}" target="_blank">Abrir PDF →</a>
-        </div>
-      `;
-      grid.appendChild(card);
-    });
+    for(const p of files){
+      grid.innerHTML += itemCard(section.icon, p);
+    }
   }
+
+  // Se ainda estiver abrindo “Salvar como”:
+  // isso depende do navegador/Windows/plug-in de PDF. Com o link via Pages, normalmente abre inline.
 }
 
 tabs.forEach(t=>{
@@ -199,9 +330,10 @@ tabs.forEach(t=>{
   });
 });
 
+q.addEventListener("input", ()=>render());
+ext.addEventListener("change", ()=>render());
+
 render();
 </script>
-
 </body>
 </html>
-
