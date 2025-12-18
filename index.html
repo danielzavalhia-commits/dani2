@@ -7,169 +7,119 @@
 
   <style>
     :root{
-      /* Paleta estilo Tramontina */
       --t-blue:#003087;
       --t-dark:#0b1f4a;
-      --t-white:#ffffff;
+
+      --bg: linear-gradient(180deg, var(--t-blue) 0%, var(--t-dark) 100%);
+      --muted: rgba(255,255,255,.82);
+      --line: rgba(255,255,255,.14);
 
       --card:#ffffff;
       --text:#0b0f1a;
       --text-muted: rgba(11,15,26,.68);
 
-      --muted: rgba(255,255,255,.85);
-      --line: rgba(255,255,255,.16);
-
       --shadow: 0 10px 26px rgba(0,0,0,.28);
       --radius: 14px;
     }
 
-    *{ box-sizing:border-box; }
+    *{box-sizing:border-box}
     body{
       margin:0;
       font-family: Arial, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      background: linear-gradient(180deg, var(--t-blue) 0%, var(--t-dark) 100%);
-      color: var(--t-white);
-      padding: 14px;
+      background: var(--bg);
+      color:#fff;
+      padding:14px;
     }
+    .wrap{max-width:1040px;margin:0 auto;}
 
-    .wrap{ max-width: 1040px; margin: 0 auto; }
-
-    /* Header sticky estilo app */
     header{
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      border-radius: 18px;
+      position:sticky; top:0; z-index:10;
+      border-radius:18px;
       background: linear-gradient(180deg, rgba(0,48,135,.92), rgba(11,31,74,.86));
       backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,.10);
-      padding: 14px;
+      border:1px solid rgba(255,255,255,.10);
+      padding:14px;
     }
 
-    .top{
-      display:flex;
-      gap:12px;
-      align-items:center;
-      justify-content:space-between;
-    }
-
-    .brand{
-      display:flex;
-      gap:10px;
-      align-items:center;
-      min-width: 0;
-    }
-
+    .top{display:flex;gap:12px;align-items:center;justify-content:space-between;}
+    .brand{display:flex;gap:10px;align-items:center;min-width:0;}
     .logo{
-      width: 42px;
-      height: 42px;
-      border-radius: 14px;
-      display:grid;
-      place-items:center;
+      width:42px;height:42px;border-radius:14px;display:grid;place-items:center;
       background: rgba(255,255,255,.12);
       border: 1px solid rgba(255,255,255,.18);
-      font-size: 18px;
-      flex: 0 0 auto;
+      font-size:18px;flex:0 0 auto;
     }
-
     h1{
-      margin:0;
-      font-size: 18px;
-      font-weight: 800;
-      letter-spacing: .2px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      margin:0;font-size:18px;font-weight:900;letter-spacing:.2px;
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
     }
-
-    .sub{
-      margin:6px 0 0;
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.2;
-    }
+    .sub{margin:6px 0 0;font-size:12px;color:var(--muted);line-height:1.2;}
 
     .repoTag{
-      font-size: 12px;
-      color: var(--muted);
-      white-space: nowrap;
-      padding: 8px 10px;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,.14);
+      font-size:12px;color:var(--muted);white-space:nowrap;
+      padding:8px 10px;border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
       background: rgba(255,255,255,.08);
     }
 
-    /* Tabs */
-    .tabs{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      margin-top: 12px;
+    .controls{
+      display:grid;
+      grid-template-columns: 1fr 170px;
+      gap:10px;
+      margin-top:12px;
     }
+    @media (max-width: 560px){
+      .controls{grid-template-columns:1fr;}
+      .repoTag{display:none;}
+    }
+    input, select{
+      width:100%;
+      appearance:none;
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.10);
+      color:#fff;
+      padding:10px 12px;
+      border-radius:12px;
+      outline:none;
+    }
+    input::placeholder{color: rgba(255,255,255,.70);}
+
+    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
     .tab{
       appearance:none;
-      border: 1px solid rgba(255,255,255,.14);
+      border:1px solid rgba(255,255,255,.14);
       background: rgba(255,255,255,.08);
-      color: #fff;
-      padding: 10px 12px;
-      border-radius: 12px;
+      color:#fff;
+      padding:10px 12px;
+      border-radius:12px;
       cursor:pointer;
-      font-weight: 800;
-      font-size: 13px;
-      transition: transform .06s ease, background .12s ease;
+      font-weight:900;
+      font-size:13px;
       user-select:none;
     }
-    .tab:hover{ transform: translateY(-1px); }
     .tab.active{
       background: rgba(255,255,255,.16);
       border-color: rgba(255,255,255,.26);
     }
 
-    /* Controles */
-    .controls{
-      display:grid;
-      grid-template-columns: 1fr 170px;
-      gap: 10px;
-      margin-top: 12px;
-    }
-    @media (max-width: 560px){
-      .controls{ grid-template-columns: 1fr; }
-      .repoTag{ display:none; }
-    }
-
-    input, select{
-      width:100%;
-      appearance:none;
-      border: 1px solid rgba(255,255,255,.16);
-      background: rgba(255,255,255,.10);
-      color: #fff;
-      padding: 10px 12px;
-      border-radius: 12px;
-      outline: none;
-    }
-    input::placeholder{ color: rgba(255,255,255,.70); }
-
-    /* Área principal rolável estilo app */
     main{
-      margin-top: 12px;
-      border-radius: 18px;
-      padding: 10px 2px 2px;
+      margin-top:12px;
       height: calc(100vh - 230px);
-      overflow: auto;
+      overflow:auto;
+      border-radius:18px;
+      padding: 10px 2px 2px;
     }
 
-    /* Grid mobile-first */
     .grid{
       display:grid;
       grid-template-columns: 1fr;
-      gap: 12px;
+      gap:12px;
       padding: 6px 2px 14px;
     }
     @media(min-width: 860px){
-      .grid{ grid-template-columns: 1fr 1fr; }
+      .grid{grid-template-columns: 1fr 1fr;}
     }
 
-    /* Cards */
     .card{
       background: var(--card);
       color: var(--text);
@@ -178,34 +128,23 @@
       box-shadow: var(--shadow);
       border: 1px solid rgba(0,0,0,.06);
     }
-    .wide{ grid-column: 1 / -1; }
+    .wide{grid-column: 1 / -1;}
 
-    .card-head{
-      display:flex;
-      gap:10px;
-      align-items:flex-start;
-    }
-
+    .card-head{display:flex;gap:10px;align-items:flex-start;}
     .icon{
-      width: 42px;
-      height: 42px;
-      border-radius: 14px;
-      display:grid;
-      place-items:center;
+      width:42px;height:42px;border-radius:14px;display:grid;place-items:center;
       background: rgba(0,48,135,.10);
       border: 1px solid rgba(0,48,135,.18);
-      font-size: 18px;
-      flex: 0 0 auto;
+      font-size:18px;flex:0 0 auto;
     }
 
     .title{
       margin:0 0 6px;
-      font-weight: 900;
+      font-weight: 950;
       font-size: 15px;
-      line-height: 1.2;
+      line-height: 1.25;
       word-break: break-word;
     }
-
     .desc{
       margin:0;
       color: var(--text-muted);
@@ -213,51 +152,32 @@
       line-height: 1.35;
     }
 
-    .chips{
-      display:flex;
-      gap:6px;
-      flex-wrap: wrap;
-      margin-top: 10px;
-    }
-    .chip{
-      font-size: 12px;
-      color: rgba(11,15,26,.65);
-      border: 1px solid rgba(0,0,0,.10);
-      background: rgba(0,0,0,.03);
-      padding: 4px 8px;
-      border-radius: 999px;
-    }
+    .meta{min-width:0;flex:1;}
 
     .actions{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 12px;
+      margin-top:12px;
+      display:flex;
+      gap:10px;
     }
     .btn{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:8px;
-      text-decoration:none;
-      padding: 10px 12px;
-      border-radius: 12px;
-      font-size: 13px;
-      font-weight: 900;
-      cursor:pointer;
-      user-select:none;
-      min-height: 40px;
-      color: #fff;
+      display:inline-flex;align-items:center;justify-content:center;
+      gap:8px;text-decoration:none;
+      padding:10px 12px;border-radius:12px;
+      font-size:13px;font-weight:950;
+      min-height:40px;
+      color:#fff;
       background: var(--t-blue);
       border: 1px solid rgba(0,48,135,.25);
-    }
-    .btn.secondary{
-      background: rgba(11,31,74,.92);
-      border-color: rgba(11,31,74,.30);
+      width: 100%;
     }
 
-    .warn{ color: #b45309; }
+    .hint{
+      margin-top:10px;
+      font-size:12px;
+      color: rgba(11,15,26,.55);
+    }
 
+    .warn{color:#b45309;}
     code{
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       background: rgba(0,0,0,.06);
@@ -266,9 +186,9 @@
     }
 
     footer{
-      margin-top: 12px;
+      margin-top:12px;
       text-align:center;
-      font-size: 12px;
+      font-size:12px;
       color: var(--muted);
       padding: 10px 6px;
     }
@@ -284,7 +204,7 @@
         <div class="logo">📁</div>
         <div style="min-width:0">
           <h1>Portal de Documentos</h1>
-          <p class="sub">Lista automática (inclui subpastas) • GitHub Pages</p>
+          <p class="sub">Acesso rápido • Sem cadastro • Atualiza sozinho</p>
         </div>
       </div>
       <div class="repoTag" id="repoTag"></div>
@@ -310,7 +230,7 @@
   </main>
 
   <footer>
-    Para adicionar arquivos: faça upload nas pastas do repositório. O site atualiza sozinho.
+    Para adicionar arquivos: envie PDFs para as pastas do repositório — o portal lista automaticamente.
   </footer>
 
 </div>
@@ -362,11 +282,7 @@ function startsWithFolder(filePath, folderRoot){
   return a === b || a.startsWith(b + "/");
 }
 function pageHrefFor(filePath){
-  // abre via GitHub Pages (mais chance de abrir inline)
   return new URL(filePath.replace(/^\/+/,""), window.location.href).href;
-}
-function githubFileUrl(filePath){
-  return `https://github.com/${OWNER}/${REPO}/blob/${BRANCH}/${filePath.replace(/^\/+/,"")}`;
 }
 
 /** ====== Cache da árvore do repo ====== */
@@ -396,7 +312,7 @@ async function getRepoTree(){
 /** ====== Render ====== */
 let activeTab = "ordens";
 
-function headerCard(title, subtitle, chips=[]){
+function headerCard(title, subtitle){
   return `
     <div class="card wide">
       <div class="card-head">
@@ -404,7 +320,6 @@ function headerCard(title, subtitle, chips=[]){
         <div class="meta">
           <p class="title">${title}</p>
           <p class="desc">${subtitle}</p>
-          <div class="chips">${chips.map(c=>`<span class="chip">${c}</span>`).join("")}</div>
         </div>
       </div>
     </div>
@@ -414,12 +329,7 @@ function headerCard(title, subtitle, chips=[]){
 function itemCard(sectionIcon, filePath){
   const title = prettifyPath(filePath);
   const href = pageHrefFor(filePath);
-  const gh  = githubFileUrl(filePath);
-
-  const chips = [
-    isPdf(filePath) ? "PDF" : "Arquivo",
-    filePath
-  ];
+  const kind = isPdf(filePath) ? "PDF" : "Arquivo";
 
   return `
     <div class="card">
@@ -427,12 +337,11 @@ function itemCard(sectionIcon, filePath){
         <div class="icon">${sectionIcon || "📄"}</div>
         <div class="meta">
           <p class="title" title="${title}">${title}</p>
-          <p class="desc">${isPdf(filePath) ? "PDF" : "Arquivo"}</p>
-          <div class="chips">${chips.map(c=>`<span class="chip">${c}</span>`).join("")}</div>
+          <p class="desc">${kind}</p>
           <div class="actions">
             <a class="btn" href="${href}" target="_blank" rel="noopener">Abrir →</a>
-            <a class="btn secondary" href="${gh}" target="_blank" rel="noopener">Ver no GitHub</a>
           </div>
+          <div class="hint">Dica: use a busca acima para encontrar mais rápido.</div>
         </div>
       </div>
     </div>
@@ -457,11 +366,7 @@ async function render(){
   grid.innerHTML = headerCard(
     activeTab === "boletins" ? "Boletins" :
     activeTab === "ordens" ? "Ordens de Serviço" : "Contatos",
-    "Listando automaticamente todos os arquivos (inclusive dentro de subpastas).",
-    [
-      `Filtro: ${ext.value === "pdf" ? "PDFs" : "Tudo"}`,
-      q.value ? `Busca: "${q.value}"` : "Busca: (vazia)"
-    ]
+    "Conteúdo listado automaticamente. Você só precisa enviar os PDFs para as pastas."
   );
 
   let allFiles;
@@ -480,17 +385,13 @@ async function render(){
     let files = allFiles.filter(p => startsWithFolder(p, root));
 
     if(showOnlyPdf) files = files.filter(isPdf);
-
-    if(query){
-      files = files.filter(p => p.toLowerCase().includes(query));
-    }
+    if(query) files = files.filter(p => p.toLowerCase().includes(query));
 
     files.sort((a,b)=>a.localeCompare(b,"pt-BR"));
 
     grid.innerHTML += headerCard(
       section.label,
-      `Pasta base: <code>/${root}</code> • Itens encontrados: <b>${files.length}</b>`,
-      [root]
+      `Pasta: <code>/${root}</code> • Itens: <b>${files.length}</b>`
     );
 
     if(files.length === 0){
@@ -500,7 +401,7 @@ async function render(){
             <div class="icon">${section.icon}</div>
             <div class="meta">
               <p class="title">Nenhum arquivo</p>
-              <p class="desc">Envie arquivos para <code>/${root}</code> (pode ser dentro de subpastas também).</p>
+              <p class="desc">Envie PDFs para <code>/${root}</code> (pode ter subpastas).</p>
             </div>
           </div>
         </div>
