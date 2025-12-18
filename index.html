@@ -1,361 +1,314 @@
 <!doctype html>
 <html lang="pt-br">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Portal de Documentos</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Portal de Documentos</title>
 
-  <style>
-    :root{
-      --t-blue:#003087;
-      --t-dark:#0b1f4a;
+<style>
+:root{
+  --blue:#003087;
+  --dark:#0b1f4a;
+  --bg: linear-gradient(180deg,var(--blue),var(--dark));
+  --card:#ffffff;
+  --text:#0b0f1a;
+  --muted:rgba(11,15,26,.65);
+  --line:rgba(255,255,255,.14);
+  --radius:14px;
+  --shadow:0 10px 26px rgba(0,0,0,.28);
+}
 
-      --bg: linear-gradient(180deg, var(--t-blue) 0%, var(--t-dark) 100%);
-      --muted: rgba(255,255,255,.82);
-      --line: rgba(255,255,255,.14);
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Arial,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  background:var(--bg);
+  color:#fff;
+  padding:14px;
+}
 
-      --card:#ffffff;
-      --text:#0b0f1a;
-      --text-muted: rgba(11,15,26,.68);
+.wrap{max-width:1040px;margin:0 auto}
 
-      --shadow: 0 10px 26px rgba(0,0,0,.28);
-      --radius: 14px;
-    }
+/* HEADER */
+header{
+  position:sticky;top:0;z-index:10;
+  background:linear-gradient(180deg,rgba(0,48,135,.95),rgba(11,31,74,.88));
+  border-radius:18px;
+  padding:14px;
+  border:1px solid rgba(255,255,255,.10);
+  backdrop-filter:blur(10px);
+}
 
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family: Arial, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      background: var(--bg);
-      color:#fff;
-      padding:14px;
-    }
-    .wrap{max-width:1040px;margin:0 auto;}
+.top{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
 
-    header{
-      position:sticky; top:0; z-index:10;
-      border-radius:18px;
-      background: linear-gradient(180deg, rgba(0,48,135,.92), rgba(11,31,74,.86));
-      backdrop-filter: blur(10px);
-      border:1px solid rgba(255,255,255,.10);
-      padding:14px;
-    }
+.logo{
+  width:42px;height:42px;border-radius:14px;
+  display:grid;place-items:center;
+  background:rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.18);
+  font-size:18px;
+}
 
-    .top{display:flex;gap:12px;align-items:center;justify-content:space-between;}
-    .brand{display:flex;gap:10px;align-items:center;min-width:0;}
-    .logo{
-      width:42px;height:42px;border-radius:14px;display:grid;place-items:center;
-      background: rgba(255,255,255,.12);
-      border: 1px solid rgba(255,255,255,.18);
-      font-size:18px;flex:0 0 auto;
-    }
-    h1{
-      margin:0;font-size:18px;font-weight:900;letter-spacing:.2px;
-      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-    }
-    .sub{margin:6px 0 0;font-size:12px;color:var(--muted);line-height:1.2;}
+h1{margin:0;font-size:18px;font-weight:900}
 
-    .repoTag{
-      font-size:12px;color:var(--muted);white-space:nowrap;
-      padding:8px 10px;border-radius:12px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.08);
-    }
+.search{
+  margin-top:12px;
+}
+.search input{
+  width:100%;
+  padding:12px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.10);
+  color:#fff;
+  outline:none;
+}
+.search input::placeholder{color:rgba(255,255,255,.7)}
 
-    .controls{
-      display:grid;
-      grid-template-columns: 1fr 170px;
-      gap:10px;
-      margin-top:12px;
-    }
-    @media (max-width: 560px){
-      .controls{grid-template-columns:1fr;}
-      .repoTag{display:none;}
-    }
-    input, select{
-      width:100%;
-      appearance:none;
-      border:1px solid rgba(255,255,255,.16);
-      background: rgba(255,255,255,.10);
-      color:#fff;
-      padding:10px 12px;
-      border-radius:12px;
-      outline:none;
-    }
-    input::placeholder{color: rgba(255,255,255,.70);}
+.tabs{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:12px;
+}
+.tab{
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.08);
+  color:#fff;
+  padding:10px 12px;
+  border-radius:12px;
+  font-weight:800;
+  cursor:pointer;
+}
+.tab.active{
+  background:rgba(255,255,255,.18);
+  border-color:rgba(255,255,255,.28);
+}
 
-    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
-    .tab{
-      appearance:none;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.08);
-      color:#fff;
-      padding:10px 12px;
-      border-radius:12px;
-      cursor:pointer;
-      font-weight:900;
-      font-size:13px;
-      user-select:none;
-    }
-    .tab.active{
-      background: rgba(255,255,255,.16);
-      border-color: rgba(255,255,255,.26);
-    }
+/* MAIN */
+main{
+  margin-top:12px;
+  height:calc(100vh - 210px);
+  overflow:auto;
+  border-radius:18px;
+  padding:8px 2px;
+}
 
-    main{
-      margin-top:12px;
-      height: calc(100vh - 230px);
-      overflow:auto;
-      border-radius:18px;
-      padding: 10px 2px 2px;
-    }
+.grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:12px;
+}
+@media(min-width:860px){
+  .grid{grid-template-columns:1fr 1fr}
+}
 
-    .grid{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap:12px;
-      padding: 6px 2px 14px;
-    }
-    @media(min-width: 860px){
-      .grid{grid-template-columns: 1fr 1fr;}
-    }
+.card{
+  background:var(--card);
+  color:var(--text);
+  border-radius:var(--radius);
+  padding:14px;
+  box-shadow:var(--shadow);
+  border:1px solid rgba(0,0,0,.06);
+}
+.wide{grid-column:1 / -1}
 
-    .card{
-      background: var(--card);
-      color: var(--text);
-      border-radius: var(--radius);
-      padding: 14px;
-      box-shadow: var(--shadow);
-      border: 1px solid rgba(0,0,0,.06);
-    }
-    .wide{grid-column: 1 / -1;}
+.card-head{
+  display:flex;
+  gap:10px;
+}
 
-    .card-head{display:flex;gap:10px;align-items:flex-start;}
-    .icon{
-      width:42px;height:42px;border-radius:14px;display:grid;place-items:center;
-      background: rgba(0,48,135,.10);
-      border: 1px solid rgba(0,48,135,.18);
-      font-size:18px;flex:0 0 auto;
-    }
+.icon{
+  width:42px;height:42px;border-radius:14px;
+  display:grid;place-items:center;
+  background:rgba(0,48,135,.12);
+  border:1px solid rgba(0,48,135,.18);
+  font-size:18px;
+}
 
-    .title{
-      margin:0 0 6px;
-      font-weight: 950;
-      font-size: 15px;
-      line-height: 1.25;
-      word-break: break-word;
-    }
-    .desc{
-      margin:0;
-      color: var(--text-muted);
-      font-size: 13px;
-      line-height: 1.35;
-    }
+.title{
+  margin:0 0 6px;
+  font-size:15px;
+  font-weight:900;
+  line-height:1.25;
+}
 
-    .meta{min-width:0;flex:1;}
+.desc{
+  margin:0;
+  font-size:13px;
+  color:var(--muted);
+}
 
-    .actions{
-      margin-top:12px;
-      display:flex;
-      gap:10px;
-    }
-    .btn{
-      display:inline-flex;align-items:center;justify-content:center;
-      gap:8px;text-decoration:none;
-      padding:10px 12px;border-radius:12px;
-      font-size:13px;font-weight:950;
-      min-height:40px;
-      color:#fff;
-      background: var(--t-blue);
-      border: 1px solid rgba(0,48,135,.25);
-      width: 100%;
-    }
+.actions{margin-top:12px}
+.btn{
+  display:inline-flex;
+  justify-content:center;
+  align-items:center;
+  width:100%;
+  padding:10px 12px;
+  border-radius:12px;
+  background:var(--blue);
+  color:#fff;
+  text-decoration:none;
+  font-weight:900;
+}
 
-    .hint{
-      margin-top:10px;
-      font-size:12px;
-      color: rgba(11,15,26,.55);
-    }
+/* CANAIS */
+.channel{
+  display:flex;
+  gap:12px;
+  align-items:center;
+}
+.channel-icon{
+  width:46px;height:46px;border-radius:14px;
+  display:grid;place-items:center;
+  background:rgba(0,48,135,.12);
+  border:1px solid rgba(0,48,135,.18);
+  font-size:20px;
+}
 
-    .warn{color:#b45309;}
-    code{
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      background: rgba(0,0,0,.06);
-      padding: 2px 6px;
-      border-radius: 8px;
-    }
-
-    footer{
-      margin-top:12px;
-      text-align:center;
-      font-size:12px;
-      color: var(--muted);
-      padding: 10px 6px;
-    }
-  </style>
+footer{
+  margin-top:12px;
+  text-align:center;
+  font-size:12px;
+  color:rgba(255,255,255,.75);
+}
+</style>
 </head>
 
 <body>
 <div class="wrap">
 
-  <header>
-    <div class="top">
-      <div class="brand">
-        <div class="logo">📁</div>
-        <div style="min-width:0">
-          <h1>Portal de Documentos</h1>
-          <p class="sub">Acesso rápido • Sem cadastro • Atualiza sozinho</p>
-        </div>
-      </div>
-      <div class="repoTag" id="repoTag"></div>
-    </div>
+<header>
+  <div class="top">
+    <div class="logo">📁</div>
+    <h1>Portal de Documentos</h1>
+  </div>
 
-    <div class="controls">
-      <input id="q" placeholder="Buscar por nome..." />
-      <select id="ext">
-        <option value="pdf">Mostrar: PDFs</option>
-        <option value="all">Mostrar: Tudo</option>
-      </select>
-    </div>
+  <div class="search">
+    <input id="q" placeholder="Buscar por nome..." />
+  </div>
 
-    <div class="tabs" role="tablist" aria-label="Abas">
-      <button class="tab active" data-tab="ordens" role="tab" aria-selected="true">Ordens de Serviço</button>
-      <button class="tab" data-tab="boletins" role="tab" aria-selected="false">Boletins</button>
-      <button class="tab" data-tab="contatos" role="tab" aria-selected="false">Contatos</button>
-    </div>
-  </header>
+  <div class="tabs">
+    <button class="tab active" data-tab="boletins">Boletins</button>
+    <button class="tab" data-tab="ordens">Ordens de Serviço</button>
+    <button class="tab" data-tab="contatos">Contatos</button>
+    <button class="tab" data-tab="canais">Canais de Atendimento</button>
+  </div>
+</header>
 
-  <main>
-    <div id="grid" class="grid"></div>
-  </main>
+<main>
+  <div id="grid" class="grid"></div>
+</main>
 
-  <footer>
-    Para adicionar arquivos: envie PDFs para as pastas do repositório — o portal lista automaticamente.
-  </footer>
+<footer>
+  Os documentos são atualizados automaticamente.
+</footer>
 
 </div>
 
 <script>
-/** ====== CONFIG DO SEU REPO ====== */
-const OWNER  = "danielzavalhia-commits";
-const REPO   = "dani2";
-const BRANCH = "main";
+const OWNER="danielzavalhia-commits";
+const REPO="dani2";
+const BRANCH="main";
 
-/**
- * Pastas “raiz” de cada seção.
- * Tudo dentro (inclusive subpastas) aparece.
- */
-const SECTIONS = {
-  ordens: [
-    { label: "Ordens de Serviço", root: "ordens_servico", icon: "🧰" }
+const SECTIONS={
+  boletins:[
+    {label:"Boletins Técnicos",root:"boletins/tecnicos",icon:"🛠️"},
+    {label:"Boletins Mão de Obra",root:"boletins/mao_de_obra",icon:"👷"}
   ],
-  boletins: [
-    { label: "Boletins Técnicos", root: "boletins/tecnicos", icon: "🛠️" },
-    { label: "Boletins Mão de Obra", root: "boletins/mao_de_obra", icon: "👷" }
+  ordens:[
+    {label:"Ordens de Serviço",root:"ordens_servico",icon:"🧰"}
   ],
-  contatos: [
-    { label: "Contatos", root: "contatos", icon: "👥" }
+  contatos:[
+    {label:"Contatos",root:"contatos",icon:"👥"}
   ]
 };
 
-/** ====== UI ====== */
-const grid = document.getElementById("grid");
-const tabs = [...document.querySelectorAll(".tab")];
-const q = document.getElementById("q");
-const ext = document.getElementById("ext");
-document.getElementById("repoTag").textContent = `${OWNER}/${REPO}`;
+const grid=document.getElementById("grid");
+const tabs=[...document.querySelectorAll(".tab")];
+const q=document.getElementById("q");
+let activeTab="boletins";
+let TREE=null;
 
-/** ====== Helpers ====== */
-function prettifyPath(path){
-  const name = path.split("/").pop() || path;
-  const base = name.replace(/\.[^/.]+$/, "");
-  return base
+function prettify(path){
+  return path.split("/").pop().replace(".pdf","")
     .replace(/[_-]+/g," ")
-    .replace(/\s+/g," ")
-    .trim()
-    .replace(/\b\w/g, c=>c.toUpperCase());
+    .replace(/\b\w/g,c=>c.toUpperCase());
 }
-function isPdf(path){ return path.toLowerCase().endsWith(".pdf"); }
-function startsWithFolder(filePath, folderRoot){
-  const a = filePath.replace(/^\/+/,"");
-  const b = folderRoot.replace(/^\/+/,"").replace(/\/+$/,"");
-  return a === b || a.startsWith(b + "/");
-}
-function pageHrefFor(filePath){
-  return new URL(filePath.replace(/^\/+/,""), window.location.href).href;
-}
+function isPdf(p){return p.toLowerCase().endsWith(".pdf")}
+function pageHref(p){return new URL(p,location.href).href}
 
-/** ====== Cache da árvore do repo ====== */
-let TREE = null;
-
-async function getBranchSha(){
-  const url = `https://api.github.com/repos/${OWNER}/${REPO}/branches/${BRANCH}`;
-  const res = await fetch(url, { headers: { "Accept":"application/vnd.github+json" }});
-  if(!res.ok) throw new Error(`Não consegui ler a branch ${BRANCH} (HTTP ${res.status}).`);
-  const data = await res.json();
-  return data?.commit?.sha;
-}
-
-async function getRepoTree(){
+async function getTree(){
   if(TREE) return TREE;
-
-  const sha = await getBranchSha();
-  const url = `https://api.github.com/repos/${OWNER}/${REPO}/git/trees/${sha}?recursive=1`;
-  const res = await fetch(url, { headers: { "Accept":"application/vnd.github+json" }});
-  if(!res.ok) throw new Error(`Não consegui listar os arquivos (HTTP ${res.status}).`);
-  const data = await res.json();
-
-  TREE = (data.tree || []).filter(x => x.type === "blob").map(x => x.path);
+  const b=await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/branches/${BRANCH}`).then(r=>r.json());
+  const sha=b.commit.sha;
+  const t=await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/git/trees/${sha}?recursive=1`).then(r=>r.json());
+  TREE=t.tree.filter(x=>x.type==="blob").map(x=>x.path);
   return TREE;
 }
 
-/** ====== Render ====== */
-let activeTab = "ordens";
-
-function headerCard(title, subtitle){
+function header(title){
   return `
     <div class="card wide">
       <div class="card-head">
         <div class="icon">📂</div>
-        <div class="meta">
+        <div>
           <p class="title">${title}</p>
-          <p class="desc">${subtitle}</p>
+          <p class="desc">Conteúdo listado automaticamente</p>
         </div>
       </div>
-    </div>
-  `;
+    </div>`;
 }
 
-function itemCard(sectionIcon, filePath){
-  const title = prettifyPath(filePath);
-  const href = pageHrefFor(filePath);
-  const kind = isPdf(filePath) ? "PDF" : "Arquivo";
-
+function pdfCard(icon,path){
   return `
     <div class="card">
       <div class="card-head">
-        <div class="icon">${sectionIcon || "📄"}</div>
-        <div class="meta">
-          <p class="title" title="${title}">${title}</p>
-          <p class="desc">${kind}</p>
+        <div class="icon">${icon}</div>
+        <div>
+          <p class="title">${prettify(path)}</p>
+          <p class="desc">PDF</p>
           <div class="actions">
-            <a class="btn" href="${href}" target="_blank" rel="noopener">Abrir →</a>
+            <a class="btn" href="${pageHref(path)}" target="_blank">Abrir →</a>
           </div>
-          <div class="hint">Dica: use a busca acima para encontrar mais rápido.</div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function canaisHTML(){
+  return `
+    <div class="card wide">
+      <div class="channel">
+        <div class="channel-icon">📞</div>
+        <div>
+          <p class="title">Central de Atendimento</p>
+          <p class="desc">Telefone e suporte técnico</p>
         </div>
       </div>
     </div>
-  `;
-}
 
-function warnCard(msg){
-  return `
-    <div class="card wide">
-      <div class="card-head">
-        <div class="icon">⚠️</div>
-        <div class="meta">
-          <p class="title warn">Aviso</p>
-          <p class="desc">${msg}</p>
+    <div class="card">
+      <div class="channel">
+        <div class="channel-icon">💬</div>
+        <div>
+          <p class="title">WhatsApp</p>
+          <p class="desc">Atendimento rápido via WhatsApp</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="channel">
+        <div class="channel-icon">✉️</div>
+        <div>
+          <p class="title">E-mail</p>
+          <p class="desc">Envie sua solicitação por e-mail</p>
         </div>
       </div>
     </div>
@@ -363,75 +316,34 @@ function warnCard(msg){
 }
 
 async function render(){
-  grid.innerHTML = headerCard(
-    activeTab === "boletins" ? "Boletins" :
-    activeTab === "ordens" ? "Ordens de Serviço" : "Contatos",
-    "Conteúdo listado automaticamente. Você só precisa enviar os PDFs para as pastas."
-  );
-
-  let allFiles;
-  try{
-    allFiles = await getRepoTree();
-  }catch(e){
-    grid.innerHTML += warnCard(e.message || String(e));
+  grid.innerHTML="";
+  if(activeTab==="canais"){
+    grid.innerHTML=canaisHTML();
     return;
   }
 
-  const query = (q.value || "").trim().toLowerCase();
-  const showOnlyPdf = (ext.value === "pdf");
+  const files=await getTree();
+  grid.innerHTML+=header(activeTab==="boletins"?"Boletins":"Ordens / Contatos");
 
-  for(const section of SECTIONS[activeTab]){
-    const root = section.root.replace(/\/+$/,"");
-    let files = allFiles.filter(p => startsWithFolder(p, root));
+  for(const sec of SECTIONS[activeTab]||[]){
+    const list=files.filter(p=>p.startsWith(sec.root)&&isPdf(p)&&(!q.value||p.toLowerCase().includes(q.value.toLowerCase())));
+    if(!list.length) continue;
 
-    if(showOnlyPdf) files = files.filter(isPdf);
-    if(query) files = files.filter(p => p.toLowerCase().includes(query));
-
-    files.sort((a,b)=>a.localeCompare(b,"pt-BR"));
-
-    grid.innerHTML += headerCard(
-      section.label,
-      `Pasta: <code>/${root}</code> • Itens: <b>${files.length}</b>`
-    );
-
-    if(files.length === 0){
-      grid.innerHTML += `
-        <div class="card wide">
-          <div class="card-head">
-            <div class="icon">${section.icon}</div>
-            <div class="meta">
-              <p class="title">Nenhum arquivo</p>
-              <p class="desc">Envie PDFs para <code>/${root}</code> (pode ter subpastas).</p>
-            </div>
-          </div>
-        </div>
-      `;
-      continue;
-    }
-
-    for(const p of files){
-      grid.innerHTML += itemCard(section.icon, p);
-    }
+    grid.innerHTML+=header(sec.label);
+    list.sort().forEach(p=>grid.innerHTML+=pdfCard(sec.icon,p));
   }
 }
 
-/* Tabs */
 tabs.forEach(t=>{
-  t.addEventListener("click", ()=>{
-    tabs.forEach(x=>{
-      x.classList.remove("active");
-      x.setAttribute("aria-selected","false");
-    });
+  t.onclick=()=>{
+    tabs.forEach(x=>x.classList.remove("active"));
     t.classList.add("active");
-    t.setAttribute("aria-selected","true");
-    activeTab = t.dataset.tab;
+    activeTab=t.dataset.tab;
     render();
-  });
+  };
 });
 
-q.addEventListener("input", ()=>render());
-ext.addEventListener("change", ()=>render());
-
+q.oninput=render;
 render();
 </script>
 </body>
