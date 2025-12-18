@@ -7,197 +7,217 @@
 
   <style>
     :root{
-      --blue:#003087;
-      --dark:#0b1f4a;
+      /* Azul Tramontina (mais claro/limpo) */
+      --t1:#003087;   /* azul principal */
+      --t2:#1f5fe0;   /* azul mais vivo para gradiente */
+      --bg:#f3f6ff;   /* fundo claro */
+      --ink:#0b1220;  /* texto escuro */
 
-      --bg: radial-gradient(1200px 700px at 20% -10%, rgba(77,163,255,.18), transparent 55%),
-            radial-gradient(900px 600px at 90% 10%, rgba(77,163,255,.12), transparent 55%),
-            linear-gradient(180deg, #050a14, #071022);
+      --muted:#5b6b85;
+      --line: rgba(0,0,0,.10);
 
-      --txt:#eaf1ff;
-      --muted:rgba(234,241,255,.70);
-      --line:rgba(234,241,255,.10);
+      --card:#ffffff;
+      --shadow: 0 12px 28px rgba(0,0,0,.14);
+      --radius: 16px;
 
-      --shadow: 0 16px 60px rgba(0,0,0,.45);
-      --radius:18px;
+      --btn: var(--t1);
+      --btn2:#0b3b8f;
 
-      --btnBlue: rgba(77,163,255,.18);
-      --btnBlueLine: rgba(77,163,255,.35);
-
-      --waBg: rgba(34,197,94,.18);
-      --waLine: rgba(34,197,94,.35);
+      --wa:#22c55e;
     }
 
     *{box-sizing:border-box}
     body{
       margin:0;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
-      color:var(--txt);
-      background: var(--bg);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color: var(--ink);
+      background:
+        radial-gradient(900px 420px at 20% -10%, rgba(31,95,224,.18), transparent 55%),
+        radial-gradient(800px 420px at 90% 0%, rgba(0,48,135,.12), transparent 55%),
+        linear-gradient(180deg, #ffffff, var(--bg));
     }
 
+    /* Header */
     header{
-      position:sticky; top:0; z-index:20;
-      background: rgba(7,16,34,.82);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: linear-gradient(90deg, rgba(0,48,135,.96), rgba(31,95,224,.92));
+      color: #fff;
+      border-bottom: 1px solid rgba(255,255,255,.18);
       backdrop-filter: blur(10px);
-      border-bottom:1px solid var(--line);
     }
 
     .wrap{max-width:1100px;margin:0 auto;padding:16px}
 
-    /* Top */
     .top{
-      display:flex; gap:12px; align-items:center;
-      padding:14px 16px 10px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding: 14px 16px 10px;
     }
-    .brand{display:flex;gap:10px;align-items:center}
-    .logo{
-      width:42px;height:42px;border-radius:16px;display:grid;place-items:center;
-      background:rgba(77,163,255,.14);
-      border:1px solid rgba(77,163,255,.22);
-      font-size:18px;
+    .logo-mini{
+      width:42px;height:42px;border-radius:16px;
+      display:grid;place-items:center;
+      background: rgba(255,255,255,.14);
+      border: 1px solid rgba(255,255,255,.18);
+      font-size: 18px;
       flex:0 0 auto;
     }
-    h1{margin:0;font-size:18px;letter-spacing:.2px}
+    h1{margin:0;font-size:18px;font-weight:900;letter-spacing:.2px}
 
-    /* Search */
-    .controls{padding:0 16px 12px}
-    input{
+    .controls{padding: 0 16px 12px;}
+    .controls input{
       width:100%;
-      appearance:none;
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.06);
-      color:var(--txt);
-      padding:12px 14px;
-      border-radius:14px;
+      border: 1px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,.14);
+      color:#fff;
+      padding: 12px 14px;
+      border-radius: 14px;
       outline:none;
     }
-    input::placeholder{color:rgba(234,241,255,.55)}
+    .controls input::placeholder{color: rgba(255,255,255,.80);}
 
-    /* Tabs */
-    .tabs{display:flex;gap:8px;padding:0 16px 14px;flex-wrap:wrap}
+    .tabs{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      padding: 0 16px 14px;
+    }
     .tab{
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.05);
-      color:var(--txt);
-      padding:10px 12px;
-      border-radius:14px;
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.12);
+      color:#fff;
+      padding: 10px 12px;
+      border-radius: 14px;
+      font-weight: 850;
+      font-size: 13px;
       cursor:pointer;
-      font-weight:800;
-      font-size:13px;
       user-select:none;
     }
     .tab.active{
-      background:rgba(77,163,255,.18);
-      border-color:rgba(77,163,255,.35);
+      background: rgba(255,255,255,.22);
+      border-color: rgba(255,255,255,.30);
     }
 
-    /* Scroll area */
+    /* Main scroll area */
     main.wrap{
-      height:calc(100vh - 160px);
+      height: calc(100vh - 168px);
       overflow:auto;
-      padding-top:14px;
+      padding-top: 14px;
     }
 
     /* Sections (PDF tabs) */
     .section{
-      margin: 0 0 18px;
-      padding: 14px;
-      border:1px solid var(--line);
-      background:rgba(13,26,51,.55);
+      background: rgba(255,255,255,.72);
+      border: 1px solid rgba(0,0,0,.08);
       border-radius: var(--radius);
-      box-shadow: 0 10px 35px rgba(0,0,0,.18);
+      box-shadow: var(--shadow);
+      margin-bottom: 16px;
+      overflow: hidden;
     }
     .section-head{
       display:flex;
       align-items:flex-end;
       justify-content:space-between;
       gap:12px;
-      padding-bottom:12px;
-      border-bottom:1px solid var(--line);
-      margin-bottom:14px;
+      padding: 14px 14px 12px;
+      border-bottom: 1px solid rgba(0,0,0,.06);
+      background: rgba(255,255,255,.60);
     }
-    .section h2{margin:0;font-size:16px;letter-spacing:.2px}
-    .count{color:var(--muted);font-size:12px;white-space:nowrap}
+    .section h2{
+      margin:0;
+      font-size:16px;
+      font-weight: 900;
+    }
+    .count{font-size:12px;color: var(--muted);white-space:nowrap}
 
-    /* Cards (PDF list) */
+    /* Grid + cards */
     .grid{
       display:grid;
-      grid-template-columns:repeat(12,1fr);
-      gap:12px;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 12px;
+      padding: 14px;
     }
     .card{
-      grid-column:span 12;
-      background:rgba(255,255,255,.06);
-      border:1px solid var(--line);
+      grid-column: span 12;
+      background: var(--card);
+      border: 1px solid rgba(0,0,0,.06);
       border-radius: var(--radius);
-      padding:14px;
+      padding: 14px;
+      box-shadow: 0 10px 22px rgba(0,0,0,.10);
       display:flex;
       gap:12px;
       align-items:flex-start;
     }
-    @media (min-width:760px){ .card{grid-column:span 6} }
-    @media (min-width:1050px){ .card{grid-column:span 4} }
+    @media (min-width:760px){ .card{grid-column: span 6;} }
+    @media (min-width:1050px){ .card{grid-column: span 4;} }
 
     .icon{
-      width:42px;height:42px;border-radius:16px;display:grid;place-items:center;
-      background:rgba(77,163,255,.14);
-      border:1px solid rgba(77,163,255,.22);
-      font-size:18px;flex:0 0 auto
+      width:42px;height:42px;border-radius:16px;
+      display:grid;place-items:center;
+      background: rgba(0,48,135,.10);
+      border: 1px solid rgba(0,48,135,.18);
+      font-size: 18px;
+      flex:0 0 auto;
     }
     .meta{flex:1;min-width:0}
     .title{
       margin:0 0 6px;
-      font-weight:900;
-      line-height:1.25;
       font-size:14px;
+      font-weight: 950;
+      line-height:1.25;
       word-break:break-word;
     }
-    .muted{margin:0;color:var(--muted);font-size:12px}
+    .small{margin:0;color: var(--muted);font-size:12px}
 
-    .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .actions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top: 12px;
+    }
     .btn{
-      display:inline-flex; gap:8px; align-items:center; justify-content:center;
-      text-decoration:none;
-      padding:10px 12px;
-      border-radius:14px;
-      border:1px solid var(--btnBlueLine);
-      background:var(--btnBlue);
-      color:var(--txt);
-      font-weight:900;
+      border: 0;
+      border-radius: 14px;
+      padding: 10px 12px;
+      font-weight: 900;
       cursor:pointer;
-      user-select:none;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
       min-width: 132px;
+      user-select:none;
     }
-    .btn.secondary{
-      border-color: var(--line);
-      background: rgba(255,255,255,.06);
-      font-weight:800;
-      min-width:auto;
-    }
-    .btn:active{transform:translateY(1px)}
+    .btn.primary{background: var(--btn); color:#fff;}
+    .btn.secondary{background: rgba(0,0,0,.06); color: var(--ink); border:1px solid rgba(0,0,0,.10); min-width:auto;}
+    .btn.wa{background: var(--wa); color:#fff;}
+    .btn:active{transform: translateY(1px);}
 
     footer{
-      padding:12px 16px;
-      color:var(--muted);
-      font-size:12px;
+      padding: 12px 16px;
       text-align:center;
-      border-top:1px solid var(--line);
+      font-size:12px;
+      color: var(--muted);
     }
 
     /* ===== PDF Modal ===== */
     .overlay{
-      position:fixed; inset:0; z-index:200;
-      display:none;
-      align-items:center; justify-content:center;
-      background: rgba(0,0,0,.55);
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,.50);
       padding: 14px;
     }
     .modal{
-      width:min(1100px, 100%);
-      height:min(86vh, 860px);
-      background: rgba(14,24,45,.96);
-      border:1px solid var(--line);
+      width: min(1100px, 100%);
+      height: min(86vh, 900px);
+      background: #fff;
       border-radius: 18px;
       overflow:hidden;
       box-shadow: var(--shadow);
@@ -205,87 +225,124 @@
       flex-direction:column;
     }
     .modal-head{
-      display:flex; align-items:center; justify-content:space-between;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
       gap:12px;
-      padding:12px 14px;
-      border-bottom:1px solid var(--line);
-      background: rgba(255,255,255,.03);
+      padding: 12px 14px;
+      background: linear-gradient(90deg, rgba(0,48,135,.96), rgba(31,95,224,.92));
+      color:#fff;
     }
     .modal-title{
-      font-weight:900;
-      font-size:13px;
+      font-weight: 900;
+      font-size: 13px;
       overflow:hidden;
       text-overflow:ellipsis;
       white-space:nowrap;
     }
-    .modal-body{flex:1; background:#0b1220}
-    .modal-body iframe{width:100%;height:100%;border:0;background:#0b1220}
+    .modal-actions{display:flex;gap:8px;align-items:center;}
+    .modal-actions .btn{
+      padding: 8px 10px;
+      border-radius: 12px;
+      min-width: auto;
+    }
+    .modal-body{flex:1;background:#fff;}
+    .modal-body iframe{
+      width:100%;
+      height:100%;
+      border:0;
+      background:#fff;
+    }
 
-    /* ===== Contato Modal (estilo do seu HTML) ===== */
+    /* ===== Contato Modal ===== */
     .contact-overlay{
       position:fixed; inset:0; z-index:220;
       display:none;
       align-items:center; justify-content:center;
-      background: rgba(0,0,0,.55);
+      background: rgba(0,0,0,.50);
       padding: 14px;
     }
     .contact-modal{
-      width:min(720px, 100%);
-      background:#f3f6fb;
-      color:#0b1220;
+      width: min(720px, 100%);
+      background:#fff;
       border-radius: 16px;
       overflow:hidden;
       box-shadow: var(--shadow);
+      border: 1px solid rgba(0,0,0,.08);
     }
     .contact-modal .h{
-      padding:14px 16px;
-      background:#e8eef7;
-      font-weight:950;
-      font-size:16px;
-      border-bottom:1px solid rgba(0,0,0,.08);
+      padding: 14px 16px;
+      background: linear-gradient(90deg, rgba(0,48,135,.96), rgba(31,95,224,.92));
+      color:#fff;
+      font-weight: 950;
+      font-size: 16px;
     }
     .contact-modal .b{
-      padding:14px 16px;
-      font-size:14px;
-      line-height:1.45;
+      padding: 14px 16px;
+      font-size: 14px;
+      line-height: 1.45;
+      color: var(--ink);
     }
     .contact-modal .f{
-      padding:14px 16px;
-      border-top:1px solid rgba(0,0,0,.08);
+      padding: 14px 16px;
+      border-top: 1px solid rgba(0,0,0,.08);
     }
     .contact-modal .f .btn{
       width:100%;
-      background:#0b3b8f;
-      border-color:#0b3b8f;
+      background: var(--btn2);
       color:#fff;
-      font-weight:950;
+      border:0;
     }
 
-    /* ===== CANAIS (layout igual ao original) ===== */
-    .canais-wrap{max-width:1100px;margin:0 auto;padding:6px 0 10px;}
-    .canais-hero{text-align:center;padding: 10px 10px 18px;}
-    .canais-logo{display:flex;justify-content:center;align-items:center;margin-top: 6px;}
-    .canais-title{margin:12px 0 6px;font-size: 22px;font-weight: 900;}
-    .canais-subtitle{margin:0;font-size: 14px;color: var(--muted);}
+    /* ===== CANAIS (layout igual ao exemplo) ===== */
+    .canais-wrap{max-width:1100px;margin:0 auto;padding: 8px 0 16px;}
+    .canais-hero{text-align:center;padding: 8px 12px 10px;}
+    .canais-logo{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      padding-top: 8px;
+    }
+    .canais-logo img{
+      height: 60px;
+      width:auto;
+      display:block;
+      filter: drop-shadow(0 10px 22px rgba(0,0,0,.18));
+    }
+    .canais-title{
+      margin: 10px 0 6px;
+      font-size: 20px;
+      font-weight: 950;
+      color: var(--ink);
+    }
+    .canais-subtitle{
+      margin: 0;
+      font-size: 14px;
+      color: var(--muted);
+    }
 
     .canais-grid{
       display:grid;
       grid-template-columns: 1fr;
       gap: 14px;
-      padding: 6px 8px 18px;
+      padding: 12px 14px 0;
     }
-    @media (min-width: 760px){ .canais-grid{ grid-template-columns: 1fr 1fr; } }
-    @media (min-width: 1050px){ .canais-grid{ grid-template-columns: 1fr 1fr 1fr; } }
+    @media (min-width:760px){ .canais-grid{grid-template-columns:1fr 1fr;} }
+    @media (min-width:1050px){ .canais-grid{grid-template-columns:1fr 1fr 1fr;} }
 
     .canais-card{
       background:#fff;
-      color:#0b1220;
       border-radius: 14px;
       padding: 16px;
-      box-shadow: 0 16px 40px rgba(0,0,0,.28);
+      box-shadow: 0 12px 26px rgba(0,0,0,.14);
       border: 1px solid rgba(0,0,0,.06);
+      color: var(--ink);
     }
-    .canais-card h3{margin:0 0 10px;font-size: 20px;font-weight: 950;}
+    .canais-card h3{
+      margin:0 0 10px;
+      font-size: 20px;
+      font-weight: 950;
+    }
     .canais-card p{
       margin: 6px 0;
       font-size: 14px;
@@ -309,22 +366,18 @@
       display:inline-flex;
       align-items:center;
       justify-content:center;
+      user-select:none;
     }
-    .canais-btn.wa{ background:#22c55e; color:#fff; }
-    .canais-btn.info{ background:#0b3b8f; color:#fff; }
-    .hidden{display:none !important;}
+    .canais-btn.wa{ background: var(--wa); color:#fff; }
+    .canais-btn.info{ background: var(--btn2); color:#fff; }
   </style>
 </head>
 
 <body>
 <header>
   <div class="top">
-    <div class="brand">
-      <div class="logo">📁</div>
-      <div>
-        <h1>Portal de Documentos</h1>
-      </div>
-    </div>
+    <div class="logo-mini">📁</div>
+    <h1>Portal de Documentos</h1>
   </div>
 
   <div class="controls">
@@ -343,7 +396,7 @@
 </main>
 
 <footer>
-  Para adicionar PDFs: envie para as pastas do repositório (o site atualiza sozinho).
+  Para adicionar PDFs: envie arquivos para as pastas do repositório (o portal lista automaticamente).
 </footer>
 
 <!-- PDF VIEWER MODAL -->
@@ -351,7 +404,10 @@
   <div class="modal">
     <div class="modal-head">
       <div class="modal-title" id="pdfTitle">Visualizar PDF</div>
-      <button class="btn secondary" onclick="closePdf()">Fechar</button>
+      <div class="modal-actions">
+        <a class="btn secondary" id="pdfOpenNew" target="_blank" rel="noopener">Abrir em nova guia</a>
+        <button class="btn secondary" onclick="closePdf()">Fechar</button>
+      </div>
     </div>
     <div class="modal-body">
       <iframe id="pdfFrame" title="Visualizador de PDF"></iframe>
@@ -374,7 +430,7 @@ const OWNER  = "danielzavalhia-commits";
 const REPO   = "dani2";
 const BRANCH = "main";
 
-/** Pastas que o portal lista automaticamente (PDFs dentro delas e subpastas) */
+/** Pastas base (listagem automática + subpastas) */
 const SECTIONS = {
   ordens: [
     { label: "Ordens de Serviço", root: "ordens_servico" }
@@ -385,7 +441,7 @@ const SECTIONS = {
   ]
 };
 
-/** ====== ABA CANAIS (dados) ====== */
+/** Dados da aba Canais */
 const CANAIS = [
   { nome:"Thaís", funcao:"Atendimento – Abertura de OS (Manutenção)", email:"atendimentocozinhas.far@tramontina.com", tel:"+55 (54) 98153-6033", wa:"https://wa.me/5554981536033" },
   { nome:"Adalberto", funcao:"Suporte Técnico – OS (Manutenção)", email:"adalberto.souto@tramontina.com", tel:"+55 (54) 99243-7971", wa:"https://wa.me/5554992437971" },
@@ -397,13 +453,13 @@ const CANAIS = [
   { nome:"Josué", funcao:"Promotor Técnico – São Paulo (SP)", email:"josue.rocha@tramontina.com", tel:"+55 (11) 91499-5839", wa:"https://wa.me/5511914995839" }
 ];
 
-/** ====== UI ====== */
+/** UI */
 const content = document.getElementById("content");
 const tabs = [...document.querySelectorAll(".tab")];
 const q = document.getElementById("q");
 let activeTab = "ordens";
 
-/** ====== Helpers ====== */
+/** Helpers */
 function isPdf(path){ return path.toLowerCase().endsWith(".pdf"); }
 function startsWithFolder(filePath, folderRoot){
   const a = filePath.replace(/^\/+/,"");
@@ -423,7 +479,7 @@ function pageHrefFor(filePath){
   return new URL(filePath.replace(/^\/+/,""), window.location.href).href;
 }
 
-/** ====== Tree cache ====== */
+/** Tree cache */
 let TREE = null;
 
 async function getBranchSha(){
@@ -448,9 +504,12 @@ async function getRepoTree(){
   return TREE;
 }
 
-/** ====== PDF modal ====== */
+/** PDF modal */
 function openPdf(title, url){
   document.getElementById("pdfTitle").textContent = title;
+  document.getElementById("pdfOpenNew").href = url;
+
+  // tenta abrir inline; se o navegador baixar, o link “Abrir em nova guia” resolve
   document.getElementById("pdfFrame").src = url + "#view=FitH";
   document.getElementById("pdfOverlay").style.display = "flex";
 }
@@ -462,7 +521,7 @@ document.getElementById("pdfOverlay").addEventListener("click", (e)=>{
   if(e.target.id === "pdfOverlay") closePdf();
 });
 
-/** ====== Contato modal ====== */
+/** Contato modal */
 function showContact(name, role, email, phone) {
   document.getElementById('modalContent').innerHTML =
     '<b>Nome:</b> ' + name +
@@ -485,7 +544,16 @@ document.addEventListener("keydown", (e)=>{
   }
 });
 
-/** ====== Render pieces ====== */
+/* CORREÇÃO: evita quebrar com acentos/travessão */
+function openContact(el){
+  const nome = el.dataset.nome;
+  const funcao = el.dataset.funcao;
+  const email = el.dataset.email;
+  const tel = el.dataset.tel;
+  showContact(nome, funcao, email, tel);
+}
+
+/** Render pieces */
 function sectionShell(title, countText, innerHtml){
   return `
     <section class="section">
@@ -506,9 +574,9 @@ function pdfCard(filePath){
       <div class="icon">📄</div>
       <div class="meta">
         <p class="title">${title}</p>
-        <p class="muted">PDF</p>
+        <p class="small">PDF</p>
         <div class="actions">
-          <button class="btn" onclick="${`openPdf(${JSON.stringify(title)}, ${JSON.stringify(url)})`}">Visualizar</button>
+          <button class="btn primary" onclick="openPdf(${JSON.stringify(title)}, ${JSON.stringify(url)})">Visualizar</button>
           <a class="btn secondary" href="${url}" target="_blank" rel="noopener">Nova guia</a>
         </div>
       </div>
@@ -516,49 +584,13 @@ function pdfCard(filePath){
   `;
 }
 
-function tramontinaLogoSvg(){
-  // “desenho” simples em SVG (não é a logo oficial, mas fica muito parecido visualmente)
-  return `
-  <svg width="520" height="90" viewBox="0 0 520 90" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Tramontina">
-    <defs>
-      <linearGradient id="g" x1="0" x2="1">
-        <stop offset="0" stop-color="rgba(255,255,255,.92)"/>
-        <stop offset="1" stop-color="rgba(255,255,255,.78)"/>
-      </linearGradient>
-    </defs>
-
-    <!-- símbolo "T" estilizado (genérico) -->
-    <path d="M55 18
-             C40 18 33 25 33 38
-             L33 42
-             L63 42
-             L63 68
-             C63 76 57 82 49 82
-             L44 82
-             L44 42
-             L16 42
-             L16 38
-             C16 15 31 6 55 6
-             L90 6
-             L90 18
-             Z"
-          fill="url(#g)" opacity="0.95"/>
-
-    <!-- texto TRAMONTINA -->
-    <text x="112" y="60"
-          font-family="Arial, system-ui, -apple-system, Segoe UI, Roboto, sans-serif"
-          font-size="44"
-          font-weight="900"
-          letter-spacing="2"
-          fill="url(#g)">TRAMONTINA</text>
-  </svg>`;
-}
-
 function canaisHtml(filtered){
   return `
     <div class="canais-wrap">
       <div class="canais-hero">
-        <div class="canais-logo">${tramontinaLogoSvg()}</div>
+        <div class="canais-logo">
+          <img src="assets/logo_tramontina.png" alt="Tramontina" />
+        </div>
         <div class="canais-title">Canais de Atendimento – Tramontina Profissional | Farroupilha</div>
         <div class="canais-subtitle">Ordens de Serviço • Suporte Técnico • Promotores Técnicos</div>
       </div>
@@ -572,7 +604,11 @@ function canaisHtml(filtered){
             <div class="canais-actions">
               <a class="canais-btn wa" target="_blank" rel="noopener" href="${c.wa}">WhatsApp</a>
               <button class="canais-btn info"
-                onclick="showContact(${JSON.stringify(c.nome)}, ${JSON.stringify(c.funcao)}, ${JSON.stringify(c.email)}, ${JSON.stringify(c.tel)})">
+                data-nome="${escapeHtml(c.nome)}"
+                data-funcao="${escapeHtml(c.funcao)}"
+                data-email="${escapeHtml(c.email)}"
+                data-tel="${escapeHtml(c.tel)}"
+                onclick="openContact(this)">
                 Mostrar contato
               </button>
             </div>
@@ -583,7 +619,17 @@ function canaisHtml(filtered){
   `;
 }
 
-/** ====== Main render ====== */
+/* evita quebrar atributo HTML */
+function escapeHtml(str){
+  return String(str)
+    .replaceAll("&","&amp;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#39;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;");
+}
+
+/** Main render */
 async function render(){
   const query = (q.value || "").trim().toLowerCase();
 
@@ -602,7 +648,7 @@ async function render(){
   try{
     allPdfs = await getRepoTree();
   }catch(e){
-    content.innerHTML = sectionShell("Erro", "", `<p class="muted">${e.message || String(e)}</p>`);
+    content.innerHTML = sectionShell("Erro", "", `<div class="grid"><div class="card"><div class="meta"><p class="title">Erro ao listar arquivos</p><p class="small">${escapeHtml(e.message || String(e))}</p></div></div></div>`);
     return;
   }
 
@@ -617,12 +663,12 @@ async function render(){
 
     const cards = files.length
       ? `<div class="grid">${files.map(pdfCard).join("")}</div>`
-      : `<p class="muted">Nenhum PDF encontrado nesta seção.</p>`;
+      : `<div class="grid"><div class="card"><div class="meta"><p class="title">Nenhum PDF encontrado</p><p class="small">Verifique se existem arquivos em <b>${escapeHtml(root)}</b>.</p></div></div></div>`;
 
     html += sectionShell(sec.label, `${files.length} arquivo(s)`, cards);
   }
 
-  content.innerHTML = html || sectionShell("Sem conteúdo", "", `<p class="muted">Nada para mostrar.</p>`);
+  content.innerHTML = html || sectionShell("Sem conteúdo", "", "");
 }
 
 /** Tabs */
