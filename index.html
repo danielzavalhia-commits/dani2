@@ -7,129 +7,313 @@
 
   <style>
     :root{
-      --bg:#0b1220; --card:#121c2f; --muted:#9fb0d0; --txt:#e8efff;
-      --accent:#4da3ff; --line: rgba(255,255,255,.10);
+      /* Paleta estilo Tramontina */
+      --t-blue:#003087;
+      --t-dark:#0b1f4a;
+      --t-white:#ffffff;
+
+      --card:#ffffff;
+      --text:#0b0f1a;
+      --text-muted: rgba(11,15,26,.68);
+
+      --muted: rgba(255,255,255,.85);
+      --line: rgba(255,255,255,.16);
+
+      --shadow: 0 10px 26px rgba(0,0,0,.28);
+      --radius: 14px;
     }
-    *{box-sizing:border-box}
+
+    *{ box-sizing:border-box; }
     body{
-      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
-      background:linear-gradient(180deg,#070c16,var(--bg)); color:var(--txt)
+      margin:0;
+      font-family: Arial, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: linear-gradient(180deg, var(--t-blue) 0%, var(--t-dark) 100%);
+      color: var(--t-white);
+      padding: 14px;
     }
+
+    .wrap{ max-width: 1040px; margin: 0 auto; }
+
+    /* Header sticky estilo app */
     header{
-      position:sticky; top:0; z-index:10;
-      background:rgba(11,18,32,.86); backdrop-filter:blur(10px);
-      border-bottom:1px solid var(--line)
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(0,48,135,.92), rgba(11,31,74,.86));
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,.10);
+      padding: 14px;
     }
-    .wrap{max-width:1100px;margin:0 auto;padding:16px}
-    .top{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:14px 16px}
-    .brand{display:flex;gap:10px;align-items:center}
+
+    .top{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:space-between;
+    }
+
+    .brand{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      min-width: 0;
+    }
+
     .logo{
-      width:40px;height:40px;border-radius:14px;display:grid;place-items:center;
-      background:rgba(77,163,255,.14);border:1px solid rgba(77,163,255,.22);font-size:18px
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display:grid;
+      place-items:center;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.18);
+      font-size: 18px;
+      flex: 0 0 auto;
     }
-    h1{margin:0;font-size:16px}
-    .sub{margin:0;color:var(--muted);font-size:12px}
 
-    .controls{display:flex;gap:10px;align-items:center;padding:0 16px 14px;flex-wrap:wrap}
-    input, select{
-      appearance:none; border:1px solid var(--line); background:rgba(255,255,255,.05); color:var(--txt);
-      padding:10px 12px; border-radius:12px; outline:none;
+    h1{
+      margin:0;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: .2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
-    input{flex:1;min-width:220px}
 
-    .tabs{display:flex;gap:8px;padding:0 16px 14px;flex-wrap:wrap}
+    .sub{
+      margin:6px 0 0;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.2;
+    }
+
+    .repoTag{
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+      padding: 8px 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.08);
+    }
+
+    /* Tabs */
+    .tabs{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top: 12px;
+    }
     .tab{
-      border:1px solid var(--line); background:rgba(255,255,255,.04);
-      color:var(--txt); padding:10px 12px; border-radius:14px;
-      cursor:pointer; font-weight:650; font-size:13px
+      appearance:none;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.08);
+      color: #fff;
+      padding: 10px 12px;
+      border-radius: 12px;
+      cursor:pointer;
+      font-weight: 800;
+      font-size: 13px;
+      transition: transform .06s ease, background .12s ease;
+      user-select:none;
     }
-    .tab.active{background:rgba(77,163,255,.18); border-color:rgba(77,163,255,.35)}
+    .tab:hover{ transform: translateY(-1px); }
+    .tab.active{
+      background: rgba(255,255,255,.16);
+      border-color: rgba(255,255,255,.26);
+    }
 
-    /* área rolável (estilo app) */
-    main.wrap{height:calc(100vh - 170px); overflow:auto; padding-top:12px}
+    /* Controles */
+    .controls{
+      display:grid;
+      grid-template-columns: 1fr 170px;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    @media (max-width: 560px){
+      .controls{ grid-template-columns: 1fr; }
+      .repoTag{ display:none; }
+    }
 
-    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
+    input, select{
+      width:100%;
+      appearance:none;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.10);
+      color: #fff;
+      padding: 10px 12px;
+      border-radius: 12px;
+      outline: none;
+    }
+    input::placeholder{ color: rgba(255,255,255,.70); }
 
+    /* Área principal rolável estilo app */
+    main{
+      margin-top: 12px;
+      border-radius: 18px;
+      padding: 10px 2px 2px;
+      height: calc(100vh - 230px);
+      overflow: auto;
+    }
+
+    /* Grid mobile-first */
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      padding: 6px 2px 14px;
+    }
+    @media(min-width: 860px){
+      .grid{ grid-template-columns: 1fr 1fr; }
+    }
+
+    /* Cards */
     .card{
-      grid-column:span 12; background:rgba(18,28,47,.92);
-      border:1px solid var(--line); border-radius:18px;
-      padding:14px; display:flex; gap:12px; align-items:flex-start
+      background: var(--card);
+      color: var(--text);
+      border-radius: var(--radius);
+      padding: 14px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(0,0,0,.06);
     }
-    @media (min-width:760px){ .card{grid-column:span 6} }
-    @media (min-width:1050px){ .card{grid-column:span 4} }
+    .wide{ grid-column: 1 / -1; }
 
-    .wide{grid-column:span 12}
+    .card-head{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+    }
 
     .icon{
-      width:42px;height:42px;border-radius:14px;display:grid;place-items:center;
-      background:rgba(77,163,255,.14);border:1px solid rgba(77,163,255,.22);
-      font-size:18px;flex:0 0 auto
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display:grid;
+      place-items:center;
+      background: rgba(0,48,135,.10);
+      border: 1px solid rgba(0,48,135,.18);
+      font-size: 18px;
+      flex: 0 0 auto;
     }
-    .meta{flex:1;min-width:0}
-    .title{
-      margin:0 0 4px;font-weight:750;
-      white-space:normal; overflow:visible; text-overflow:unset;
-      line-height:1.2
-    }
-    .desc{margin:0;color:var(--muted);font-size:13px;line-height:1.3}
-    .chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
-    .chip{font-size:12px;color:var(--muted);border:1px solid var(--line);padding:4px 8px;border-radius:999px}
 
+    .title{
+      margin:0 0 6px;
+      font-weight: 900;
+      font-size: 15px;
+      line-height: 1.2;
+      word-break: break-word;
+    }
+
+    .desc{
+      margin:0;
+      color: var(--text-muted);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .chips{
+      display:flex;
+      gap:6px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .chip{
+      font-size: 12px;
+      color: rgba(11,15,26,.65);
+      border: 1px solid rgba(0,0,0,.10);
+      background: rgba(0,0,0,.03);
+      padding: 4px 8px;
+      border-radius: 999px;
+    }
+
+    .actions{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
     .btn{
-      display:inline-flex;gap:8px;align-items:center;text-decoration:none;
-      padding:10px 12px;border-radius:14px;
-      background:rgba(77,163,255,.18);
-      border:1px solid rgba(77,163,255,.35); color:var(--txt); margin-top:10px
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      text-decoration:none;
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 900;
+      cursor:pointer;
+      user-select:none;
+      min-height: 40px;
+      color: #fff;
+      background: var(--t-blue);
+      border: 1px solid rgba(0,48,135,.25);
     }
     .btn.secondary{
-      background:rgba(255,255,255,.06);
-      border:1px solid var(--line);
-      margin-left:8px
+      background: rgba(11,31,74,.92);
+      border-color: rgba(11,31,74,.30);
     }
-    .warn{color:#ffd28a}
-    code{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}
+
+    .warn{ color: #b45309; }
+
+    code{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      background: rgba(0,0,0,.06);
+      padding: 2px 6px;
+      border-radius: 8px;
+    }
+
     footer{
-      padding:12px 16px;color:var(--muted);
-      font-size:12px;text-align:center;border-top:1px solid var(--line)
+      margin-top: 12px;
+      text-align:center;
+      font-size: 12px;
+      color: var(--muted);
+      padding: 10px 6px;
     }
   </style>
 </head>
 
 <body>
-<header>
-  <div class="top">
-    <div class="brand">
-      <div class="logo">📁</div>
-      <div>
-        <h1>Portal de Documentos</h1>
-        <p class="sub">Lista automática (inclui subpastas) • GitHub Pages</p>
+<div class="wrap">
+
+  <header>
+    <div class="top">
+      <div class="brand">
+        <div class="logo">📁</div>
+        <div style="min-width:0">
+          <h1>Portal de Documentos</h1>
+          <p class="sub">Lista automática (inclui subpastas) • GitHub Pages</p>
+        </div>
       </div>
+      <div class="repoTag" id="repoTag"></div>
     </div>
-    <div style="color:var(--muted);font-size:12px" id="repoTag"></div>
-  </div>
 
-  <div class="controls">
-    <input id="q" placeholder="Buscar por nome..." />
-    <select id="ext">
-      <option value="pdf">Mostrar: PDFs</option>
-      <option value="all">Mostrar: Tudo</option>
-    </select>
-  </div>
+    <div class="controls">
+      <input id="q" placeholder="Buscar por nome..." />
+      <select id="ext">
+        <option value="pdf">Mostrar: PDFs</option>
+        <option value="all">Mostrar: Tudo</option>
+      </select>
+    </div>
 
-  <div class="tabs">
-    <button class="tab active" data-tab="ordens">Ordens de Serviço</button>
-    <button class="tab" data-tab="boletins">Boletins</button>
-    <button class="tab" data-tab="contatos">Contatos</button>
-  </div>
-</header>
+    <div class="tabs" role="tablist" aria-label="Abas">
+      <button class="tab active" data-tab="ordens" role="tab" aria-selected="true">Ordens de Serviço</button>
+      <button class="tab" data-tab="boletins" role="tab" aria-selected="false">Boletins</button>
+      <button class="tab" data-tab="contatos" role="tab" aria-selected="false">Contatos</button>
+    </div>
+  </header>
 
-<main class="wrap">
-  <div id="grid" class="grid"></div>
-</main>
+  <main>
+    <div id="grid" class="grid"></div>
+  </main>
 
-<footer>
-  Para adicionar arquivos: faça upload nas pastas do repositório. O site atualiza sozinho.
-</footer>
+  <footer>
+    Para adicionar arquivos: faça upload nas pastas do repositório. O site atualiza sozinho.
+  </footer>
+
+</div>
 
 <script>
 /** ====== CONFIG DO SEU REPO ====== */
@@ -179,7 +363,6 @@ function startsWithFolder(filePath, folderRoot){
 }
 function pageHrefFor(filePath){
   // abre via GitHub Pages (mais chance de abrir inline)
-  // exemplo: https://.../dani2/boletins/tecnicos/arquivo.pdf
   return new URL(filePath.replace(/^\/+/,""), window.location.href).href;
 }
 function githubFileUrl(filePath){
@@ -206,7 +389,6 @@ async function getRepoTree(){
   if(!res.ok) throw new Error(`Não consegui listar os arquivos (HTTP ${res.status}).`);
   const data = await res.json();
 
-  // data.tree -> itens com { path, type: "blob" | "tree" }
   TREE = (data.tree || []).filter(x => x.type === "blob").map(x => x.path);
   return TREE;
 }
@@ -217,33 +399,41 @@ let activeTab = "ordens";
 function headerCard(title, subtitle, chips=[]){
   return `
     <div class="card wide">
-      <div class="icon">📂</div>
-      <div class="meta">
-        <p class="title">${title}</p>
-        <p class="desc">${subtitle}</p>
-        <div class="chips">${chips.map(c=>`<span class="chip">${c}</span>`).join("")}</div>
+      <div class="card-head">
+        <div class="icon">📂</div>
+        <div class="meta">
+          <p class="title">${title}</p>
+          <p class="desc">${subtitle}</p>
+          <div class="chips">${chips.map(c=>`<span class="chip">${c}</span>`).join("")}</div>
+        </div>
       </div>
     </div>
   `;
 }
 
-function itemCard(icon, filePath){
+function itemCard(sectionIcon, filePath){
   const title = prettifyPath(filePath);
   const href = pageHrefFor(filePath);
   const gh  = githubFileUrl(filePath);
+
   const chips = [
     isPdf(filePath) ? "PDF" : "Arquivo",
     filePath
   ];
+
   return `
     <div class="card">
-      <div class="icon">📄</div>
-      <div class="meta">
-        <p class="title" title="${title}">${title}</p>
-        <p class="desc">${isPdf(filePath) ? "PDF" : "Arquivo"}</p>
-        <div class="chips">${chips.map(c=>`<span class="chip">${c}</span>`).join("")}</div>
-        <a class="btn" href="${href}" target="_blank" rel="noopener">Abrir →</a>
-        <a class="btn secondary" href="${gh}" target="_blank" rel="noopener">Ver no GitHub</a>
+      <div class="card-head">
+        <div class="icon">${sectionIcon || "📄"}</div>
+        <div class="meta">
+          <p class="title" title="${title}">${title}</p>
+          <p class="desc">${isPdf(filePath) ? "PDF" : "Arquivo"}</p>
+          <div class="chips">${chips.map(c=>`<span class="chip">${c}</span>`).join("")}</div>
+          <div class="actions">
+            <a class="btn" href="${href}" target="_blank" rel="noopener">Abrir →</a>
+            <a class="btn secondary" href="${gh}" target="_blank" rel="noopener">Ver no GitHub</a>
+          </div>
+        </div>
       </div>
     </div>
   `;
@@ -252,9 +442,12 @@ function itemCard(icon, filePath){
 function warnCard(msg){
   return `
     <div class="card wide">
-      <div class="meta">
-        <p class="title warn">⚠️ Aviso</p>
-        <p class="desc">${msg}</p>
+      <div class="card-head">
+        <div class="icon">⚠️</div>
+        <div class="meta">
+          <p class="title warn">Aviso</p>
+          <p class="desc">${msg}</p>
+        </div>
       </div>
     </div>
   `;
@@ -303,9 +496,12 @@ async function render(){
     if(files.length === 0){
       grid.innerHTML += `
         <div class="card wide">
-          <div class="meta">
-            <p class="title">Nenhum arquivo</p>
-            <p class="desc">Envie arquivos para <code>/${root}</code> (pode ser dentro de subpastas também).</p>
+          <div class="card-head">
+            <div class="icon">${section.icon}</div>
+            <div class="meta">
+              <p class="title">Nenhum arquivo</p>
+              <p class="desc">Envie arquivos para <code>/${root}</code> (pode ser dentro de subpastas também).</p>
+            </div>
           </div>
         </div>
       `;
@@ -316,15 +512,17 @@ async function render(){
       grid.innerHTML += itemCard(section.icon, p);
     }
   }
-
-  // Se ainda estiver abrindo “Salvar como”:
-  // isso depende do navegador/Windows/plug-in de PDF. Com o link via Pages, normalmente abre inline.
 }
 
+/* Tabs */
 tabs.forEach(t=>{
   t.addEventListener("click", ()=>{
-    tabs.forEach(x=>x.classList.remove("active"));
+    tabs.forEach(x=>{
+      x.classList.remove("active");
+      x.setAttribute("aria-selected","false");
+    });
     t.classList.add("active");
+    t.setAttribute("aria-selected","true");
     activeTab = t.dataset.tab;
     render();
   });
