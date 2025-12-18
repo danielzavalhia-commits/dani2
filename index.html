@@ -7,25 +7,33 @@
 
   <style>
     :root{
-      --bg:#071022;
-      --card:#0d1a33;
-      --card2:#0b1730;
+      --blue:#003087;
+      --dark:#0b1f4a;
+
+      --bg: radial-gradient(1200px 700px at 20% -10%, rgba(77,163,255,.18), transparent 55%),
+            radial-gradient(900px 600px at 90% 10%, rgba(77,163,255,.12), transparent 55%),
+            linear-gradient(180deg, #050a14, #071022);
+
       --txt:#eaf1ff;
       --muted:rgba(234,241,255,.70);
       --line:rgba(234,241,255,.10);
-      --accent:#4da3ff;
-      --good:#22c55e;
+
       --shadow: 0 16px 60px rgba(0,0,0,.45);
       --radius:18px;
+
+      --btnBlue: rgba(77,163,255,.18);
+      --btnBlueLine: rgba(77,163,255,.35);
+
+      --waBg: rgba(34,197,94,.18);
+      --waLine: rgba(34,197,94,.35);
     }
+
     *{box-sizing:border-box}
     body{
       margin:0;
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
       color:var(--txt);
-      background: radial-gradient(1200px 700px at 20% -10%, rgba(77,163,255,.18), transparent 55%),
-                  radial-gradient(900px 600px at 90% 10%, rgba(77,163,255,.12), transparent 55%),
-                  linear-gradient(180deg, #050a14, var(--bg));
+      background: var(--bg);
     }
 
     header{
@@ -34,9 +42,12 @@
       backdrop-filter: blur(10px);
       border-bottom:1px solid var(--line);
     }
+
     .wrap{max-width:1100px;margin:0 auto;padding:16px}
+
+    /* Top */
     .top{
-      display:flex; gap:12px; align-items:center; justify-content:space-between;
+      display:flex; gap:12px; align-items:center;
       padding:14px 16px 10px;
     }
     .brand{display:flex;gap:10px;align-items:center}
@@ -45,14 +56,12 @@
       background:rgba(77,163,255,.14);
       border:1px solid rgba(77,163,255,.22);
       font-size:18px;
+      flex:0 0 auto;
     }
     h1{margin:0;font-size:18px;letter-spacing:.2px}
-    .sub{margin:2px 0 0;color:var(--muted);font-size:12px}
 
-    .controls{
-      display:flex; gap:10px; align-items:center;
-      padding:0 16px 12px;
-    }
+    /* Search */
+    .controls{padding:0 16px 12px}
     input{
       width:100%;
       appearance:none;
@@ -63,7 +72,9 @@
       border-radius:14px;
       outline:none;
     }
+    input::placeholder{color:rgba(234,241,255,.55)}
 
+    /* Tabs */
     .tabs{display:flex;gap:8px;padding:0 16px 14px;flex-wrap:wrap}
     .tab{
       border:1px solid var(--line);
@@ -72,21 +83,23 @@
       padding:10px 12px;
       border-radius:14px;
       cursor:pointer;
-      font-weight:700;
+      font-weight:800;
       font-size:13px;
+      user-select:none;
     }
     .tab.active{
       background:rgba(77,163,255,.18);
       border-color:rgba(77,163,255,.35);
     }
 
-    /* área rolável */
+    /* Scroll area */
     main.wrap{
-      height:calc(100vh - 164px);
+      height:calc(100vh - 160px);
       overflow:auto;
       padding-top:14px;
     }
 
+    /* Sections (PDF tabs) */
     .section{
       margin: 0 0 18px;
       padding: 14px;
@@ -104,23 +117,15 @@
       border-bottom:1px solid var(--line);
       margin-bottom:14px;
     }
-    .section h2{
-      margin:0;
-      font-size:16px;
-      letter-spacing:.2px;
-    }
-    .count{
-      color:var(--muted);
-      font-size:12px;
-      white-space:nowrap;
-    }
+    .section h2{margin:0;font-size:16px;letter-spacing:.2px}
+    .count{color:var(--muted);font-size:12px;white-space:nowrap}
 
+    /* Cards (PDF list) */
     .grid{
       display:grid;
       grid-template-columns:repeat(12,1fr);
       gap:12px;
     }
-
     .card{
       grid-column:span 12;
       background:rgba(255,255,255,.06);
@@ -138,45 +143,39 @@
       width:42px;height:42px;border-radius:16px;display:grid;place-items:center;
       background:rgba(77,163,255,.14);
       border:1px solid rgba(77,163,255,.22);
-      font-size:18px;flex:0 0 auto;
+      font-size:18px;flex:0 0 auto
     }
     .meta{flex:1;min-width:0}
     .title{
       margin:0 0 6px;
-      font-weight:800;
+      font-weight:900;
       line-height:1.25;
       font-size:14px;
+      word-break:break-word;
     }
     .muted{margin:0;color:var(--muted);font-size:12px}
 
-    .actions{
-      display:flex; gap:8px; flex-wrap:wrap;
-      margin-top:12px;
-    }
+    .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
     .btn{
       display:inline-flex; gap:8px; align-items:center; justify-content:center;
       text-decoration:none;
       padding:10px 12px;
       border-radius:14px;
-      border:1px solid rgba(77,163,255,.35);
-      background:rgba(77,163,255,.18);
+      border:1px solid var(--btnBlueLine);
+      background:var(--btnBlue);
       color:var(--txt);
-      font-weight:800;
+      font-weight:900;
       cursor:pointer;
-      min-width: 120px;
       user-select:none;
-    }
-    .btn:active{transform:translateY(1px)}
-    .btn.wa{
-      border-color: rgba(34,197,94,.35);
-      background: rgba(34,197,94,.18);
+      min-width: 132px;
     }
     .btn.secondary{
       border-color: var(--line);
       background: rgba(255,255,255,.06);
-      font-weight:700;
+      font-weight:800;
       min-width:auto;
     }
+    .btn:active{transform:translateY(1px)}
 
     footer{
       padding:12px 16px;
@@ -186,7 +185,7 @@
       border-top:1px solid var(--line);
     }
 
-    /* ===== Modal (PDF viewer) ===== */
+    /* ===== PDF Modal ===== */
     .overlay{
       position:fixed; inset:0; z-index:200;
       display:none;
@@ -213,21 +212,16 @@
       background: rgba(255,255,255,.03);
     }
     .modal-title{
-      font-weight:800;
+      font-weight:900;
       font-size:13px;
-      color:var(--txt);
       overflow:hidden;
       text-overflow:ellipsis;
       white-space:nowrap;
     }
     .modal-body{flex:1; background:#0b1220}
-    .modal-body iframe{
-      width:100%; height:100%;
-      border:0;
-      background:#0b1220;
-    }
+    .modal-body iframe{width:100%;height:100%;border:0;background:#0b1220}
 
-    /* ===== Modal (contato) ===== */
+    /* ===== Contato Modal (estilo do seu HTML) ===== */
     .contact-overlay{
       position:fixed; inset:0; z-index:220;
       display:none;
@@ -246,7 +240,7 @@
     .contact-modal .h{
       padding:14px 16px;
       background:#e8eef7;
-      font-weight:900;
+      font-weight:950;
       font-size:16px;
       border-bottom:1px solid rgba(0,0,0,.08);
     }
@@ -264,9 +258,60 @@
       background:#0b3b8f;
       border-color:#0b3b8f;
       color:#fff;
-      font-weight:900;
+      font-weight:950;
     }
 
+    /* ===== CANAIS (layout igual ao original) ===== */
+    .canais-wrap{max-width:1100px;margin:0 auto;padding:6px 0 10px;}
+    .canais-hero{text-align:center;padding: 10px 10px 18px;}
+    .canais-logo{display:flex;justify-content:center;align-items:center;margin-top: 6px;}
+    .canais-title{margin:12px 0 6px;font-size: 22px;font-weight: 900;}
+    .canais-subtitle{margin:0;font-size: 14px;color: var(--muted);}
+
+    .canais-grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      padding: 6px 8px 18px;
+    }
+    @media (min-width: 760px){ .canais-grid{ grid-template-columns: 1fr 1fr; } }
+    @media (min-width: 1050px){ .canais-grid{ grid-template-columns: 1fr 1fr 1fr; } }
+
+    .canais-card{
+      background:#fff;
+      color:#0b1220;
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 16px 40px rgba(0,0,0,.28);
+      border: 1px solid rgba(0,0,0,.06);
+    }
+    .canais-card h3{margin:0 0 10px;font-size: 20px;font-weight: 950;}
+    .canais-card p{
+      margin: 6px 0;
+      font-size: 14px;
+      line-height: 1.35;
+      color: rgba(11,18,32,.78);
+    }
+    .canais-actions{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .canais-btn{
+      border:0;
+      border-radius: 12px;
+      padding: 12px 12px;
+      font-weight: 950;
+      cursor: pointer;
+      text-decoration:none;
+      text-align:center;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .canais-btn.wa{ background:#22c55e; color:#fff; }
+    .canais-btn.info{ background:#0b3b8f; color:#fff; }
     .hidden{display:none !important;}
   </style>
 </head>
@@ -278,10 +323,8 @@
       <div class="logo">📁</div>
       <div>
         <h1>Portal de Documentos</h1>
-        <p class="sub">Conteúdo automático • sem cadastro</p>
       </div>
     </div>
-    <!-- removido: repo tag para ficar clean -->
   </div>
 
   <div class="controls">
@@ -300,7 +343,7 @@
 </main>
 
 <footer>
-  Para adicionar PDFs: faça upload nas pastas do repositório (o site atualiza sozinho).
+  Para adicionar PDFs: envie para as pastas do repositório (o site atualiza sozinho).
 </footer>
 
 <!-- PDF VIEWER MODAL -->
@@ -316,7 +359,7 @@
   </div>
 </div>
 
-<!-- CONTATO MODAL (igual ao seu HTML) -->
+<!-- CONTATO MODAL -->
 <div id="modalOverlay" class="contact-overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
   <div class="contact-modal">
     <div class="h"><span id="modalTitle">Informações de Contato</span></div>
@@ -342,64 +385,16 @@ const SECTIONS = {
   ]
 };
 
-/** ====== ABA “CANAIS” (copiado do seu HTML) ====== */
+/** ====== ABA CANAIS (dados) ====== */
 const CANAIS = [
-  {
-    nome: "Thaís",
-    funcao: "Atendimento – Abertura de OS (Manutenção)",
-    email: "atendimentocozinhas.far@tramontina.com",
-    tel: "+55 (54) 98153-6033",
-    wa: "https://wa.me/5554981536033"
-  },
-  {
-    nome: "Adalberto",
-    funcao: "Suporte Técnico – OS (Manutenção)",
-    email: "adalberto.souto@tramontina.com",
-    tel: "+55 (54) 99243-7971",
-    wa: "https://wa.me/5554992437971"
-  },
-  {
-    nome: "Patrícia",
-    funcao: "Atendimento – OS (Instalação)",
-    email: "atendimentocozinhas.far@tramontina.com",
-    tel: "+55 (54) 99140-5949",
-    wa: "https://wa.me/5554991405949"
-  },
-  {
-    nome: "Mauricio",
-    funcao: "Suporte Técnico – OS (Instalação)",
-    email: "mauricio.lima@tramontina.com",
-    tel: "+55 (54) 99205-7821",
-    wa: "https://wa.me/5554992057821"
-  },
-  {
-    nome: "Lucas",
-    funcao: "Promotor Técnico – Sudeste/Nordeste",
-    email: "lucas.bin@tramontina.com",
-    tel: "+55 (54) 98153-6011",
-    wa: "https://wa.me/5554981536011"
-  },
-  {
-    nome: "Rafael",
-    funcao: "Promotor Técnico – Sul/CO/Norte",
-    email: "rafael.silva@tramontina.com",
-    tel: "+55 (54) 99101-2025",
-    wa: "https://wa.me/5554991012025"
-  },
-  {
-    nome: "Robson",
-    funcao: "Suporte Técnico – SP",
-    email: "robson.menezes@tramontina.com",
-    tel: "+55 (11) 96171-8289",
-    wa: "https://wa.me/5511961718289"
-  },
-  {
-    nome: "Josué",
-    funcao: "Promotor Técnico – SP",
-    email: "josue.rocha@tramontina.com",
-    tel: "+55 (11) 91499-5839",
-    wa: "https://wa.me/5511914995839"
-  }
+  { nome:"Thaís", funcao:"Atendimento – Abertura de OS (Manutenção)", email:"atendimentocozinhas.far@tramontina.com", tel:"+55 (54) 98153-6033", wa:"https://wa.me/5554981536033" },
+  { nome:"Adalberto", funcao:"Suporte Técnico – OS (Manutenção)", email:"adalberto.souto@tramontina.com", tel:"+55 (54) 99243-7971", wa:"https://wa.me/5554992437971" },
+  { nome:"Patrícia", funcao:"Atendimento – OS (Instalação)", email:"atendimentocozinhas.far@tramontina.com", tel:"+55 (54) 99140-5949", wa:"https://wa.me/5554991405949" },
+  { nome:"Mauricio", funcao:"Suporte Técnico – OS (Instalação)", email:"mauricio.lima@tramontina.com", tel:"+55 (54) 99205-7821", wa:"https://wa.me/5554992057821" },
+  { nome:"Lucas", funcao:"Promotor Técnico – Regiões Sudeste e Nordeste", email:"lucas.bin@tramontina.com", tel:"+55 (54) 98153-6011", wa:"https://wa.me/5554981536011" },
+  { nome:"Rafael", funcao:"Promotor Técnico – Regiões Sul, Centro-Oeste e Norte", email:"rafael.silva@tramontina.com", tel:"+55 (54) 99101-2025", wa:"https://wa.me/5554991012025" },
+  { nome:"Robson", funcao:"Suporte Técnico – São Paulo (SP)", email:"robson.menezes@tramontina.com", tel:"+55 (11) 96171-8289", wa:"https://wa.me/5511961718289" },
+  { nome:"Josué", funcao:"Promotor Técnico – São Paulo (SP)", email:"josue.rocha@tramontina.com", tel:"+55 (11) 91499-5839", wa:"https://wa.me/5511914995839" }
 ];
 
 /** ====== UI ====== */
@@ -425,11 +420,10 @@ function prettify(path){
     .replace(/\b\w/g, c=>c.toUpperCase());
 }
 function pageHrefFor(filePath){
-  // link público do GitHub Pages
   return new URL(filePath.replace(/^\/+/,""), window.location.href).href;
 }
 
-/** ====== Tree cache (lista automática do GitHub) ====== */
+/** ====== Tree cache ====== */
 let TREE = null;
 
 async function getBranchSha(){
@@ -450,14 +444,13 @@ async function getRepoTree(){
   TREE = (data.tree || [])
     .filter(x => x.type === "blob")
     .map(x => x.path)
-    .filter(isPdf); // versão 1: só PDFs
+    .filter(isPdf);
   return TREE;
 }
 
 /** ====== PDF modal ====== */
 function openPdf(title, url){
   document.getElementById("pdfTitle").textContent = title;
-  // dica: alguns viewers respeitam esses parâmetros
   document.getElementById("pdfFrame").src = url + "#view=FitH";
   document.getElementById("pdfOverlay").style.display = "flex";
 }
@@ -468,14 +461,8 @@ function closePdf(){
 document.getElementById("pdfOverlay").addEventListener("click", (e)=>{
   if(e.target.id === "pdfOverlay") closePdf();
 });
-document.addEventListener("keydown", (e)=>{
-  if(e.key === "Escape"){
-    closePdf();
-    closeModal();
-  }
-});
 
-/** ====== Modal de contato (mesmo comportamento do seu HTML) ====== */
+/** ====== Contato modal ====== */
 function showContact(name, role, email, phone) {
   document.getElementById('modalContent').innerHTML =
     '<b>Nome:</b> ' + name +
@@ -491,8 +478,14 @@ function closeModal() {
 document.getElementById("modalOverlay").addEventListener("click", (e)=>{
   if(e.target.id === "modalOverlay") closeModal();
 });
+document.addEventListener("keydown", (e)=>{
+  if(e.key === "Escape"){
+    closePdf();
+    closeModal();
+  }
+});
 
-/** ====== Render ====== */
+/** ====== Render pieces ====== */
 function sectionShell(title, countText, innerHtml){
   return `
     <section class="section">
@@ -516,52 +509,95 @@ function pdfCard(filePath){
         <p class="muted">PDF</p>
         <div class="actions">
           <button class="btn" onclick="${`openPdf(${JSON.stringify(title)}, ${JSON.stringify(url)})`}">Visualizar</button>
-          <a class="btn secondary" href="${url}" target="_blank" rel="noopener">Abrir em nova guia</a>
+          <a class="btn secondary" href="${url}" target="_blank" rel="noopener">Nova guia</a>
         </div>
       </div>
     </div>
   `;
 }
 
-function canalCard(c){
+function tramontinaLogoSvg(){
+  // “desenho” simples em SVG (não é a logo oficial, mas fica muito parecido visualmente)
   return `
-    <div class="card">
-      <div class="icon">👤</div>
-      <div class="meta">
-        <p class="title">${c.nome}</p>
-        <p class="muted">${c.funcao}<br>E-mail: ${c.email}</p>
-        <div class="actions">
-          <a class="btn wa" target="_blank" rel="noopener" href="${c.wa}">WhatsApp</a>
-          <button class="btn" onclick="${`showContact(${JSON.stringify(c.nome)}, ${JSON.stringify(c.funcao)}, ${JSON.stringify(c.email)}, ${JSON.stringify(c.tel)})`}">Mostrar contato</button>
-        </div>
+  <svg width="520" height="90" viewBox="0 0 520 90" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Tramontina">
+    <defs>
+      <linearGradient id="g" x1="0" x2="1">
+        <stop offset="0" stop-color="rgba(255,255,255,.92)"/>
+        <stop offset="1" stop-color="rgba(255,255,255,.78)"/>
+      </linearGradient>
+    </defs>
+
+    <!-- símbolo "T" estilizado (genérico) -->
+    <path d="M55 18
+             C40 18 33 25 33 38
+             L33 42
+             L63 42
+             L63 68
+             C63 76 57 82 49 82
+             L44 82
+             L44 42
+             L16 42
+             L16 38
+             C16 15 31 6 55 6
+             L90 6
+             L90 18
+             Z"
+          fill="url(#g)" opacity="0.95"/>
+
+    <!-- texto TRAMONTINA -->
+    <text x="112" y="60"
+          font-family="Arial, system-ui, -apple-system, Segoe UI, Roboto, sans-serif"
+          font-size="44"
+          font-weight="900"
+          letter-spacing="2"
+          fill="url(#g)">TRAMONTINA</text>
+  </svg>`;
+}
+
+function canaisHtml(filtered){
+  return `
+    <div class="canais-wrap">
+      <div class="canais-hero">
+        <div class="canais-logo">${tramontinaLogoSvg()}</div>
+        <div class="canais-title">Canais de Atendimento – Tramontina Profissional | Farroupilha</div>
+        <div class="canais-subtitle">Ordens de Serviço • Suporte Técnico • Promotores Técnicos</div>
+      </div>
+
+      <div class="canais-grid">
+        ${filtered.map(c => `
+          <div class="canais-card">
+            <h3>${c.nome}</h3>
+            <p>${c.funcao}</p>
+            <p><b>E-mail:</b> ${c.email}</p>
+            <div class="canais-actions">
+              <a class="canais-btn wa" target="_blank" rel="noopener" href="${c.wa}">WhatsApp</a>
+              <button class="canais-btn info"
+                onclick="showContact(${JSON.stringify(c.nome)}, ${JSON.stringify(c.funcao)}, ${JSON.stringify(c.email)}, ${JSON.stringify(c.tel)})">
+                Mostrar contato
+              </button>
+            </div>
+          </div>
+        `).join("")}
       </div>
     </div>
   `;
 }
 
+/** ====== Main render ====== */
 async function render(){
   const query = (q.value || "").trim().toLowerCase();
 
-  // ABA CANAIS (não depende do GitHub tree)
+  // CANAIS
   if(activeTab === "canais"){
     const filtered = CANAIS.filter(c => {
       if(!query) return true;
       return (c.nome + " " + c.funcao + " " + c.email).toLowerCase().includes(query);
     });
-
-    const cards = filtered.length
-      ? `<div class="grid">${filtered.map(canalCard).join("")}</div>`
-      : `<p class="muted">Nenhum contato encontrado.</p>`;
-
-    content.innerHTML = sectionShell(
-      "Canais de Atendimento",
-      `${filtered.length} contato(s)`,
-      cards
-    );
+    content.innerHTML = canaisHtml(filtered);
     return;
   }
 
-  // ABAS de PDFs (ordens/boletins)
+  // PDFs
   let allPdfs = [];
   try{
     allPdfs = await getRepoTree();
@@ -576,11 +612,7 @@ async function render(){
   for(const sec of sections){
     const root = sec.root.replace(/\/+$/,"");
     let files = allPdfs.filter(p => startsWithFolder(p, root));
-
-    if(query){
-      files = files.filter(p => p.toLowerCase().includes(query));
-    }
-
+    if(query) files = files.filter(p => p.toLowerCase().includes(query));
     files.sort((a,b)=>a.localeCompare(b,"pt-BR"));
 
     const cards = files.length
@@ -606,356 +638,6 @@ tabs.forEach(t=>{
 /** Busca */
 q.addEventListener("input", ()=>render());
 
-render();
-</script>
-</body>
-</html>
-<!doctype html>
-<html lang="pt-br">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Portal de Documentos</title>
-
-<style>
-:root{
-  --blue:#003087;
-  --dark:#0b1f4a;
-  --bg: linear-gradient(180deg,var(--blue),var(--dark));
-  --card:#ffffff;
-  --text:#0b0f1a;
-  --muted:rgba(11,15,26,.65);
-  --line:rgba(255,255,255,.14);
-  --radius:14px;
-  --shadow:0 10px 26px rgba(0,0,0,.28);
-}
-
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:Arial,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
-  background:var(--bg);
-  color:#fff;
-  padding:14px;
-}
-
-.wrap{max-width:1040px;margin:0 auto}
-
-/* HEADER */
-header{
-  position:sticky;top:0;z-index:10;
-  background:linear-gradient(180deg,rgba(0,48,135,.95),rgba(11,31,74,.88));
-  border-radius:18px;
-  padding:14px;
-  border:1px solid rgba(255,255,255,.10);
-  backdrop-filter:blur(10px);
-}
-
-.top{
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
-
-.logo{
-  width:42px;height:42px;border-radius:14px;
-  display:grid;place-items:center;
-  background:rgba(255,255,255,.14);
-  border:1px solid rgba(255,255,255,.18);
-  font-size:18px;
-}
-
-h1{margin:0;font-size:18px;font-weight:900}
-
-.search{
-  margin-top:12px;
-}
-.search input{
-  width:100%;
-  padding:12px;
-  border-radius:12px;
-  border:1px solid rgba(255,255,255,.18);
-  background:rgba(255,255,255,.10);
-  color:#fff;
-  outline:none;
-}
-.search input::placeholder{color:rgba(255,255,255,.7)}
-
-.tabs{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  margin-top:12px;
-}
-.tab{
-  border:1px solid rgba(255,255,255,.14);
-  background:rgba(255,255,255,.08);
-  color:#fff;
-  padding:10px 12px;
-  border-radius:12px;
-  font-weight:800;
-  cursor:pointer;
-}
-.tab.active{
-  background:rgba(255,255,255,.18);
-  border-color:rgba(255,255,255,.28);
-}
-
-/* MAIN */
-main{
-  margin-top:12px;
-  height:calc(100vh - 210px);
-  overflow:auto;
-  border-radius:18px;
-  padding:8px 2px;
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:1fr;
-  gap:12px;
-}
-@media(min-width:860px){
-  .grid{grid-template-columns:1fr 1fr}
-}
-
-.card{
-  background:var(--card);
-  color:var(--text);
-  border-radius:var(--radius);
-  padding:14px;
-  box-shadow:var(--shadow);
-  border:1px solid rgba(0,0,0,.06);
-}
-.wide{grid-column:1 / -1}
-
-.card-head{
-  display:flex;
-  gap:10px;
-}
-
-.icon{
-  width:42px;height:42px;border-radius:14px;
-  display:grid;place-items:center;
-  background:rgba(0,48,135,.12);
-  border:1px solid rgba(0,48,135,.18);
-  font-size:18px;
-}
-
-.title{
-  margin:0 0 6px;
-  font-size:15px;
-  font-weight:900;
-  line-height:1.25;
-}
-
-.desc{
-  margin:0;
-  font-size:13px;
-  color:var(--muted);
-}
-
-.actions{margin-top:12px}
-.btn{
-  display:inline-flex;
-  justify-content:center;
-  align-items:center;
-  width:100%;
-  padding:10px 12px;
-  border-radius:12px;
-  background:var(--blue);
-  color:#fff;
-  text-decoration:none;
-  font-weight:900;
-}
-
-/* CANAIS */
-.channel{
-  display:flex;
-  gap:12px;
-  align-items:center;
-}
-.channel-icon{
-  width:46px;height:46px;border-radius:14px;
-  display:grid;place-items:center;
-  background:rgba(0,48,135,.12);
-  border:1px solid rgba(0,48,135,.18);
-  font-size:20px;
-}
-
-footer{
-  margin-top:12px;
-  text-align:center;
-  font-size:12px;
-  color:rgba(255,255,255,.75);
-}
-</style>
-</head>
-
-<body>
-<div class="wrap">
-
-<header>
-  <div class="top">
-    <div class="logo">📁</div>
-    <h1>Portal de Documentos</h1>
-  </div>
-
-  <div class="search">
-    <input id="q" placeholder="Buscar por nome..." />
-  </div>
-
-  <div class="tabs">
-    <button class="tab active" data-tab="boletins">Boletins</button>
-    <button class="tab" data-tab="ordens">Ordens de Serviço</button>
-    <button class="tab" data-tab="contatos">Contatos</button>
-    <button class="tab" data-tab="canais">Canais de Atendimento</button>
-  </div>
-</header>
-
-<main>
-  <div id="grid" class="grid"></div>
-</main>
-
-<footer>
-  Os documentos são atualizados automaticamente.
-</footer>
-
-</div>
-
-<script>
-const OWNER="danielzavalhia-commits";
-const REPO="dani2";
-const BRANCH="main";
-
-const SECTIONS={
-  boletins:[
-    {label:"Boletins Técnicos",root:"boletins/tecnicos",icon:"🛠️"},
-    {label:"Boletins Mão de Obra",root:"boletins/mao_de_obra",icon:"👷"}
-  ],
-  ordens:[
-    {label:"Ordens de Serviço",root:"ordens_servico",icon:"🧰"}
-  ],
-  contatos:[
-    {label:"Contatos",root:"contatos",icon:"👥"}
-  ]
-};
-
-const grid=document.getElementById("grid");
-const tabs=[...document.querySelectorAll(".tab")];
-const q=document.getElementById("q");
-let activeTab="boletins";
-let TREE=null;
-
-function prettify(path){
-  return path.split("/").pop().replace(".pdf","")
-    .replace(/[_-]+/g," ")
-    .replace(/\b\w/g,c=>c.toUpperCase());
-}
-function isPdf(p){return p.toLowerCase().endsWith(".pdf")}
-function pageHref(p){return new URL(p,location.href).href}
-
-async function getTree(){
-  if(TREE) return TREE;
-  const b=await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/branches/${BRANCH}`).then(r=>r.json());
-  const sha=b.commit.sha;
-  const t=await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/git/trees/${sha}?recursive=1`).then(r=>r.json());
-  TREE=t.tree.filter(x=>x.type==="blob").map(x=>x.path);
-  return TREE;
-}
-
-function header(title){
-  return `
-    <div class="card wide">
-      <div class="card-head">
-        <div class="icon">📂</div>
-        <div>
-          <p class="title">${title}</p>
-          <p class="desc">Conteúdo listado automaticamente</p>
-        </div>
-      </div>
-    </div>`;
-}
-
-function pdfCard(icon,path){
-  return `
-    <div class="card">
-      <div class="card-head">
-        <div class="icon">${icon}</div>
-        <div>
-          <p class="title">${prettify(path)}</p>
-          <p class="desc">PDF</p>
-          <div class="actions">
-            <a class="btn" href="${pageHref(path)}" target="_blank">Abrir →</a>
-          </div>
-        </div>
-      </div>
-    </div>`;
-}
-
-function canaisHTML(){
-  return `
-    <div class="card wide">
-      <div class="channel">
-        <div class="channel-icon">📞</div>
-        <div>
-          <p class="title">Central de Atendimento</p>
-          <p class="desc">Telefone e suporte técnico</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="channel">
-        <div class="channel-icon">💬</div>
-        <div>
-          <p class="title">WhatsApp</p>
-          <p class="desc">Atendimento rápido via WhatsApp</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="channel">
-        <div class="channel-icon">✉️</div>
-        <div>
-          <p class="title">E-mail</p>
-          <p class="desc">Envie sua solicitação por e-mail</p>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-async function render(){
-  grid.innerHTML="";
-  if(activeTab==="canais"){
-    grid.innerHTML=canaisHTML();
-    return;
-  }
-
-  const files=await getTree();
-  grid.innerHTML+=header(activeTab==="boletins"?"Boletins":"Ordens / Contatos");
-
-  for(const sec of SECTIONS[activeTab]||[]){
-    const list=files.filter(p=>p.startsWith(sec.root)&&isPdf(p)&&(!q.value||p.toLowerCase().includes(q.value.toLowerCase())));
-    if(!list.length) continue;
-
-    grid.innerHTML+=header(sec.label);
-    list.sort().forEach(p=>grid.innerHTML+=pdfCard(sec.icon,p));
-  }
-}
-
-tabs.forEach(t=>{
-  t.onclick=()=>{
-    tabs.forEach(x=>x.classList.remove("active"));
-    t.classList.add("active");
-    activeTab=t.dataset.tab;
-    render();
-  };
-});
-
-q.oninput=render;
 render();
 </script>
 </body>
