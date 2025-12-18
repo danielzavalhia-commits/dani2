@@ -1,6 +1,618 @@
 <!doctype html>
 <html lang="pt-br">
 <head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Portal de Documentos</title>
+
+  <style>
+    :root{
+      --bg:#071022;
+      --card:#0d1a33;
+      --card2:#0b1730;
+      --txt:#eaf1ff;
+      --muted:rgba(234,241,255,.70);
+      --line:rgba(234,241,255,.10);
+      --accent:#4da3ff;
+      --good:#22c55e;
+      --shadow: 0 16px 60px rgba(0,0,0,.45);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+      color:var(--txt);
+      background: radial-gradient(1200px 700px at 20% -10%, rgba(77,163,255,.18), transparent 55%),
+                  radial-gradient(900px 600px at 90% 10%, rgba(77,163,255,.12), transparent 55%),
+                  linear-gradient(180deg, #050a14, var(--bg));
+    }
+
+    header{
+      position:sticky; top:0; z-index:20;
+      background: rgba(7,16,34,.82);
+      backdrop-filter: blur(10px);
+      border-bottom:1px solid var(--line);
+    }
+    .wrap{max-width:1100px;margin:0 auto;padding:16px}
+    .top{
+      display:flex; gap:12px; align-items:center; justify-content:space-between;
+      padding:14px 16px 10px;
+    }
+    .brand{display:flex;gap:10px;align-items:center}
+    .logo{
+      width:42px;height:42px;border-radius:16px;display:grid;place-items:center;
+      background:rgba(77,163,255,.14);
+      border:1px solid rgba(77,163,255,.22);
+      font-size:18px;
+    }
+    h1{margin:0;font-size:18px;letter-spacing:.2px}
+    .sub{margin:2px 0 0;color:var(--muted);font-size:12px}
+
+    .controls{
+      display:flex; gap:10px; align-items:center;
+      padding:0 16px 12px;
+    }
+    input{
+      width:100%;
+      appearance:none;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.06);
+      color:var(--txt);
+      padding:12px 14px;
+      border-radius:14px;
+      outline:none;
+    }
+
+    .tabs{display:flex;gap:8px;padding:0 16px 14px;flex-wrap:wrap}
+    .tab{
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.05);
+      color:var(--txt);
+      padding:10px 12px;
+      border-radius:14px;
+      cursor:pointer;
+      font-weight:700;
+      font-size:13px;
+    }
+    .tab.active{
+      background:rgba(77,163,255,.18);
+      border-color:rgba(77,163,255,.35);
+    }
+
+    /* área rolável */
+    main.wrap{
+      height:calc(100vh - 164px);
+      overflow:auto;
+      padding-top:14px;
+    }
+
+    .section{
+      margin: 0 0 18px;
+      padding: 14px;
+      border:1px solid var(--line);
+      background:rgba(13,26,51,.55);
+      border-radius: var(--radius);
+      box-shadow: 0 10px 35px rgba(0,0,0,.18);
+    }
+    .section-head{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:12px;
+      padding-bottom:12px;
+      border-bottom:1px solid var(--line);
+      margin-bottom:14px;
+    }
+    .section h2{
+      margin:0;
+      font-size:16px;
+      letter-spacing:.2px;
+    }
+    .count{
+      color:var(--muted);
+      font-size:12px;
+      white-space:nowrap;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(12,1fr);
+      gap:12px;
+    }
+
+    .card{
+      grid-column:span 12;
+      background:rgba(255,255,255,.06);
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      padding:14px;
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+    }
+    @media (min-width:760px){ .card{grid-column:span 6} }
+    @media (min-width:1050px){ .card{grid-column:span 4} }
+
+    .icon{
+      width:42px;height:42px;border-radius:16px;display:grid;place-items:center;
+      background:rgba(77,163,255,.14);
+      border:1px solid rgba(77,163,255,.22);
+      font-size:18px;flex:0 0 auto;
+    }
+    .meta{flex:1;min-width:0}
+    .title{
+      margin:0 0 6px;
+      font-weight:800;
+      line-height:1.25;
+      font-size:14px;
+    }
+    .muted{margin:0;color:var(--muted);font-size:12px}
+
+    .actions{
+      display:flex; gap:8px; flex-wrap:wrap;
+      margin-top:12px;
+    }
+    .btn{
+      display:inline-flex; gap:8px; align-items:center; justify-content:center;
+      text-decoration:none;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid rgba(77,163,255,.35);
+      background:rgba(77,163,255,.18);
+      color:var(--txt);
+      font-weight:800;
+      cursor:pointer;
+      min-width: 120px;
+      user-select:none;
+    }
+    .btn:active{transform:translateY(1px)}
+    .btn.wa{
+      border-color: rgba(34,197,94,.35);
+      background: rgba(34,197,94,.18);
+    }
+    .btn.secondary{
+      border-color: var(--line);
+      background: rgba(255,255,255,.06);
+      font-weight:700;
+      min-width:auto;
+    }
+
+    footer{
+      padding:12px 16px;
+      color:var(--muted);
+      font-size:12px;
+      text-align:center;
+      border-top:1px solid var(--line);
+    }
+
+    /* ===== Modal (PDF viewer) ===== */
+    .overlay{
+      position:fixed; inset:0; z-index:200;
+      display:none;
+      align-items:center; justify-content:center;
+      background: rgba(0,0,0,.55);
+      padding: 14px;
+    }
+    .modal{
+      width:min(1100px, 100%);
+      height:min(86vh, 860px);
+      background: rgba(14,24,45,.96);
+      border:1px solid var(--line);
+      border-radius: 18px;
+      overflow:hidden;
+      box-shadow: var(--shadow);
+      display:flex;
+      flex-direction:column;
+    }
+    .modal-head{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px;
+      padding:12px 14px;
+      border-bottom:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+    }
+    .modal-title{
+      font-weight:800;
+      font-size:13px;
+      color:var(--txt);
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+    .modal-body{flex:1; background:#0b1220}
+    .modal-body iframe{
+      width:100%; height:100%;
+      border:0;
+      background:#0b1220;
+    }
+
+    /* ===== Modal (contato) ===== */
+    .contact-overlay{
+      position:fixed; inset:0; z-index:220;
+      display:none;
+      align-items:center; justify-content:center;
+      background: rgba(0,0,0,.55);
+      padding: 14px;
+    }
+    .contact-modal{
+      width:min(720px, 100%);
+      background:#f3f6fb;
+      color:#0b1220;
+      border-radius: 16px;
+      overflow:hidden;
+      box-shadow: var(--shadow);
+    }
+    .contact-modal .h{
+      padding:14px 16px;
+      background:#e8eef7;
+      font-weight:900;
+      font-size:16px;
+      border-bottom:1px solid rgba(0,0,0,.08);
+    }
+    .contact-modal .b{
+      padding:14px 16px;
+      font-size:14px;
+      line-height:1.45;
+    }
+    .contact-modal .f{
+      padding:14px 16px;
+      border-top:1px solid rgba(0,0,0,.08);
+    }
+    .contact-modal .f .btn{
+      width:100%;
+      background:#0b3b8f;
+      border-color:#0b3b8f;
+      color:#fff;
+      font-weight:900;
+    }
+
+    .hidden{display:none !important;}
+  </style>
+</head>
+
+<body>
+<header>
+  <div class="top">
+    <div class="brand">
+      <div class="logo">📁</div>
+      <div>
+        <h1>Portal de Documentos</h1>
+        <p class="sub">Conteúdo automático • sem cadastro</p>
+      </div>
+    </div>
+    <!-- removido: repo tag para ficar clean -->
+  </div>
+
+  <div class="controls">
+    <input id="q" placeholder="Buscar por nome..." />
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="ordens">Ordens de Serviço</button>
+    <button class="tab" data-tab="boletins">Boletins</button>
+    <button class="tab" data-tab="canais">Canais</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <div id="content"></div>
+</main>
+
+<footer>
+  Para adicionar PDFs: faça upload nas pastas do repositório (o site atualiza sozinho).
+</footer>
+
+<!-- PDF VIEWER MODAL -->
+<div id="pdfOverlay" class="overlay" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="pdfTitle">Visualizar PDF</div>
+      <button class="btn secondary" onclick="closePdf()">Fechar</button>
+    </div>
+    <div class="modal-body">
+      <iframe id="pdfFrame" title="Visualizador de PDF"></iframe>
+    </div>
+  </div>
+</div>
+
+<!-- CONTATO MODAL (igual ao seu HTML) -->
+<div id="modalOverlay" class="contact-overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="contact-modal">
+    <div class="h"><span id="modalTitle">Informações de Contato</span></div>
+    <div class="b"><div id="modalContent"></div></div>
+    <div class="f"><button class="btn" onclick="closeModal()">Fechar</button></div>
+  </div>
+</div>
+
+<script>
+/** ====== CONFIG DO SEU REPO ====== */
+const OWNER  = "danielzavalhia-commits";
+const REPO   = "dani2";
+const BRANCH = "main";
+
+/** Pastas que o portal lista automaticamente (PDFs dentro delas e subpastas) */
+const SECTIONS = {
+  ordens: [
+    { label: "Ordens de Serviço", root: "ordens_servico" }
+  ],
+  boletins: [
+    { label: "Boletins Técnicos", root: "boletins/tecnicos" },
+    { label: "Boletins Mão de Obra", root: "boletins/mao_de_obra" }
+  ]
+};
+
+/** ====== ABA “CANAIS” (copiado do seu HTML) ====== */
+const CANAIS = [
+  {
+    nome: "Thaís",
+    funcao: "Atendimento – Abertura de OS (Manutenção)",
+    email: "atendimentocozinhas.far@tramontina.com",
+    tel: "+55 (54) 98153-6033",
+    wa: "https://wa.me/5554981536033"
+  },
+  {
+    nome: "Adalberto",
+    funcao: "Suporte Técnico – OS (Manutenção)",
+    email: "adalberto.souto@tramontina.com",
+    tel: "+55 (54) 99243-7971",
+    wa: "https://wa.me/5554992437971"
+  },
+  {
+    nome: "Patrícia",
+    funcao: "Atendimento – OS (Instalação)",
+    email: "atendimentocozinhas.far@tramontina.com",
+    tel: "+55 (54) 99140-5949",
+    wa: "https://wa.me/5554991405949"
+  },
+  {
+    nome: "Mauricio",
+    funcao: "Suporte Técnico – OS (Instalação)",
+    email: "mauricio.lima@tramontina.com",
+    tel: "+55 (54) 99205-7821",
+    wa: "https://wa.me/5554992057821"
+  },
+  {
+    nome: "Lucas",
+    funcao: "Promotor Técnico – Sudeste/Nordeste",
+    email: "lucas.bin@tramontina.com",
+    tel: "+55 (54) 98153-6011",
+    wa: "https://wa.me/5554981536011"
+  },
+  {
+    nome: "Rafael",
+    funcao: "Promotor Técnico – Sul/CO/Norte",
+    email: "rafael.silva@tramontina.com",
+    tel: "+55 (54) 99101-2025",
+    wa: "https://wa.me/5554991012025"
+  },
+  {
+    nome: "Robson",
+    funcao: "Suporte Técnico – SP",
+    email: "robson.menezes@tramontina.com",
+    tel: "+55 (11) 96171-8289",
+    wa: "https://wa.me/5511961718289"
+  },
+  {
+    nome: "Josué",
+    funcao: "Promotor Técnico – SP",
+    email: "josue.rocha@tramontina.com",
+    tel: "+55 (11) 91499-5839",
+    wa: "https://wa.me/5511914995839"
+  }
+];
+
+/** ====== UI ====== */
+const content = document.getElementById("content");
+const tabs = [...document.querySelectorAll(".tab")];
+const q = document.getElementById("q");
+let activeTab = "ordens";
+
+/** ====== Helpers ====== */
+function isPdf(path){ return path.toLowerCase().endsWith(".pdf"); }
+function startsWithFolder(filePath, folderRoot){
+  const a = filePath.replace(/^\/+/,"");
+  const b = folderRoot.replace(/^\/+/,"").replace(/\/+$/,"");
+  return a === b || a.startsWith(b + "/");
+}
+function prettify(path){
+  const name = path.split("/").pop() || path;
+  const base = name.replace(/\.[^/.]+$/, "");
+  return base
+    .replace(/[_-]+/g," ")
+    .replace(/\s+/g," ")
+    .trim()
+    .replace(/\b\w/g, c=>c.toUpperCase());
+}
+function pageHrefFor(filePath){
+  // link público do GitHub Pages
+  return new URL(filePath.replace(/^\/+/,""), window.location.href).href;
+}
+
+/** ====== Tree cache (lista automática do GitHub) ====== */
+let TREE = null;
+
+async function getBranchSha(){
+  const url = `https://api.github.com/repos/${OWNER}/${REPO}/branches/${BRANCH}`;
+  const res = await fetch(url, { headers: { "Accept":"application/vnd.github+json" }});
+  if(!res.ok) throw new Error(`Não consegui ler a branch ${BRANCH} (HTTP ${res.status}).`);
+  const data = await res.json();
+  return data?.commit?.sha;
+}
+
+async function getRepoTree(){
+  if(TREE) return TREE;
+  const sha = await getBranchSha();
+  const url = `https://api.github.com/repos/${OWNER}/${REPO}/git/trees/${sha}?recursive=1`;
+  const res = await fetch(url, { headers: { "Accept":"application/vnd.github+json" }});
+  if(!res.ok) throw new Error(`Não consegui listar os arquivos (HTTP ${res.status}).`);
+  const data = await res.json();
+  TREE = (data.tree || [])
+    .filter(x => x.type === "blob")
+    .map(x => x.path)
+    .filter(isPdf); // versão 1: só PDFs
+  return TREE;
+}
+
+/** ====== PDF modal ====== */
+function openPdf(title, url){
+  document.getElementById("pdfTitle").textContent = title;
+  // dica: alguns viewers respeitam esses parâmetros
+  document.getElementById("pdfFrame").src = url + "#view=FitH";
+  document.getElementById("pdfOverlay").style.display = "flex";
+}
+function closePdf(){
+  document.getElementById("pdfOverlay").style.display = "none";
+  document.getElementById("pdfFrame").src = "about:blank";
+}
+document.getElementById("pdfOverlay").addEventListener("click", (e)=>{
+  if(e.target.id === "pdfOverlay") closePdf();
+});
+document.addEventListener("keydown", (e)=>{
+  if(e.key === "Escape"){
+    closePdf();
+    closeModal();
+  }
+});
+
+/** ====== Modal de contato (mesmo comportamento do seu HTML) ====== */
+function showContact(name, role, email, phone) {
+  document.getElementById('modalContent').innerHTML =
+    '<b>Nome:</b> ' + name +
+    '<br><b>Função:</b> ' + role +
+    '<br><b>E-mail:</b> ' + email +
+    '<br><b>Telefone:</b> ' + phone;
+
+  document.getElementById('modalOverlay').style.display = 'flex';
+}
+function closeModal() {
+  document.getElementById('modalOverlay').style.display = 'none';
+}
+document.getElementById("modalOverlay").addEventListener("click", (e)=>{
+  if(e.target.id === "modalOverlay") closeModal();
+});
+
+/** ====== Render ====== */
+function sectionShell(title, countText, innerHtml){
+  return `
+    <section class="section">
+      <div class="section-head">
+        <h2>${title}</h2>
+        <div class="count">${countText || ""}</div>
+      </div>
+      ${innerHtml}
+    </section>
+  `;
+}
+
+function pdfCard(filePath){
+  const title = prettify(filePath);
+  const url = pageHrefFor(filePath);
+  return `
+    <div class="card">
+      <div class="icon">📄</div>
+      <div class="meta">
+        <p class="title">${title}</p>
+        <p class="muted">PDF</p>
+        <div class="actions">
+          <button class="btn" onclick="${`openPdf(${JSON.stringify(title)}, ${JSON.stringify(url)})`}">Visualizar</button>
+          <a class="btn secondary" href="${url}" target="_blank" rel="noopener">Abrir em nova guia</a>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function canalCard(c){
+  return `
+    <div class="card">
+      <div class="icon">👤</div>
+      <div class="meta">
+        <p class="title">${c.nome}</p>
+        <p class="muted">${c.funcao}<br>E-mail: ${c.email}</p>
+        <div class="actions">
+          <a class="btn wa" target="_blank" rel="noopener" href="${c.wa}">WhatsApp</a>
+          <button class="btn" onclick="${`showContact(${JSON.stringify(c.nome)}, ${JSON.stringify(c.funcao)}, ${JSON.stringify(c.email)}, ${JSON.stringify(c.tel)})`}">Mostrar contato</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+async function render(){
+  const query = (q.value || "").trim().toLowerCase();
+
+  // ABA CANAIS (não depende do GitHub tree)
+  if(activeTab === "canais"){
+    const filtered = CANAIS.filter(c => {
+      if(!query) return true;
+      return (c.nome + " " + c.funcao + " " + c.email).toLowerCase().includes(query);
+    });
+
+    const cards = filtered.length
+      ? `<div class="grid">${filtered.map(canalCard).join("")}</div>`
+      : `<p class="muted">Nenhum contato encontrado.</p>`;
+
+    content.innerHTML = sectionShell(
+      "Canais de Atendimento",
+      `${filtered.length} contato(s)`,
+      cards
+    );
+    return;
+  }
+
+  // ABAS de PDFs (ordens/boletins)
+  let allPdfs = [];
+  try{
+    allPdfs = await getRepoTree();
+  }catch(e){
+    content.innerHTML = sectionShell("Erro", "", `<p class="muted">${e.message || String(e)}</p>`);
+    return;
+  }
+
+  const sections = SECTIONS[activeTab] || [];
+  let html = "";
+
+  for(const sec of sections){
+    const root = sec.root.replace(/\/+$/,"");
+    let files = allPdfs.filter(p => startsWithFolder(p, root));
+
+    if(query){
+      files = files.filter(p => p.toLowerCase().includes(query));
+    }
+
+    files.sort((a,b)=>a.localeCompare(b,"pt-BR"));
+
+    const cards = files.length
+      ? `<div class="grid">${files.map(pdfCard).join("")}</div>`
+      : `<p class="muted">Nenhum PDF encontrado nesta seção.</p>`;
+
+    html += sectionShell(sec.label, `${files.length} arquivo(s)`, cards);
+  }
+
+  content.innerHTML = html || sectionShell("Sem conteúdo", "", `<p class="muted">Nada para mostrar.</p>`);
+}
+
+/** Tabs */
+tabs.forEach(t=>{
+  t.addEventListener("click", ()=>{
+    tabs.forEach(x=>x.classList.remove("active"));
+    t.classList.add("active");
+    activeTab = t.dataset.tab;
+    render();
+  });
+});
+
+/** Busca */
+q.addEventListener("input", ()=>render());
+
+render();
+</script>
+</body>
+</html>
+<!doctype html>
+<html lang="pt-br">
+<head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Portal de Documentos</title>
