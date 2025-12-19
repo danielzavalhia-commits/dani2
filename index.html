@@ -76,9 +76,10 @@
       background:#fff;
       border:1px solid var(--line);
       color:var(--ink);
-      padding:10px 14px;
+      padding:9px 12px;
       border-radius:14px;
       font-weight:900;
+      font-size:13px;
       cursor:pointer;
       user-select:none;
       box-shadow: 0 10px 22px rgba(0,0,0,.08);
@@ -97,6 +98,49 @@
     .hero img{height:64px;margin-bottom:10px; width:auto}
     .hero h2{margin:0;font-size:22px;font-weight:900}
     .hero p{margin:6px 0 0;color:var(--muted)}
+
+    /* ===== VISTA: barra de categoria (mais visual) ===== */
+    .catbar{
+      max-width:1100px;
+      margin: 10px auto 0;
+      padding: 0 16px;
+      display:flex;
+      justify-content:center;
+    }
+    .catbar-inner{
+      width: min(820px, 100%);
+      background: rgba(255,255,255,.85);
+      border: 1px solid rgba(0,0,0,.08);
+      box-shadow: 0 12px 26px rgba(0,0,0,.10);
+      border-radius: 18px;
+      padding: 10px 12px;
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+      justify-content:center;
+    }
+    .catbar-tag{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      background: rgba(0,48,135,.10);
+      border: 1px solid rgba(0,48,135,.18);
+      font-weight: 950;
+      font-size: 14px;
+      color: var(--ink);
+    }
+    .catbar-tag .dot{
+      width:10px;height:10px;border-radius:999px;
+      background: var(--blue);
+      box-shadow: 0 0 0 4px rgba(0,48,135,.10);
+    }
+    .catbar-help{
+      font-size: 12px;
+      color: var(--muted);
+    }
 
     main{max-width:1100px;margin:auto;padding:16px}
 
@@ -266,6 +310,17 @@
 <div id="hero" class="hero"></div>
 
 <div id="vistaLinhas" class="subtabs" style="display:none"></div>
+
+<div id="vistaCatbar" class="catbar" style="display:none">
+  <div class="catbar-inner">
+    <div class="catbar-tag">
+      <span class="dot"></span>
+      <span id="vistaCatLabel">Categoria</span>
+    </div>
+    <div class="catbar-help">Selecione uma categoria abaixo</div>
+  </div>
+</div>
+
 <div id="vistaCategorias" class="subtabs" style="display:none"></div>
 
 <div id="boletinsSubtabs" class="subtabs" style="display:none">
@@ -302,10 +357,9 @@ const OWNER="danielzavalhia-commits";
 const REPO="dani2";
 const BRANCH="main";
 
+/* ====== CONFIG ====== */
 const VISTA_BASE = "vista_explodida";
 
-// UI labels (aqui pode ficar “profissional” com acento)
-// A busca de PDFs/categorias é “tolerante” (ignora acento/maiúscula) — então funciona mesmo se no GitHub estiver diferente.
 const VISTA_LINHAS = [
   { key:"América", label:"América" },
   { key:"Europa", label:"Europa" },
@@ -337,6 +391,7 @@ const CANAIS = [
   { nome:"Josué", funcao:"Promotor Técnico – São Paulo (SP)", email:"josue.rocha@tramontina.com", tel:"+55 (11) 91499-5839", wa:"https://wa.me/5511914995839" }
 ];
 
+/* ====== UI ====== */
 const hero = document.getElementById("hero");
 const content = document.getElementById("content");
 const q = document.getElementById("q");
@@ -345,6 +400,8 @@ const tabs = [...document.querySelectorAll(".tab")];
 const vistaLinhasEl = document.getElementById("vistaLinhas");
 const vistaCatsEl = document.getElementById("vistaCategorias");
 const boletinsSubtabs = document.getElementById("boletinsSubtabs");
+const vistaCatbar = document.getElementById("vistaCatbar");
+const vistaCatLabel = document.getElementById("vistaCatLabel");
 
 let activeTab = "vista";
 let activeBoletimSub = "tecnicos";
@@ -410,11 +467,11 @@ async function getRepoTree(){
   return TREE;
 }
 
-/** PDF modal */
+/** PDF modal (VISUALIZAR SEM BAIXAR) */
 function openPdf(title, url){
   document.getElementById("pdfTitle").textContent = title;
 
-  // Visualização “garantida” via Google Viewer (evita baixar em vários PCs)
+  // 1) força visualização via Google Viewer (mais confiável)
   const viewer = "https://docs.google.com/gview?embedded=1&url=" + encodeURIComponent(url);
   document.getElementById("pdfFrame").src = viewer;
 
@@ -449,9 +506,13 @@ document.addEventListener("keydown",(e)=>{ if(e.key==="Escape"){ closePdf(); clo
 
 /** UI shell */
 function setHero(){
-  boletinsSubtabs.style.display = (activeTab==="boletins") ? "flex" : "none";
-  vistaLinhasEl.style.display = (activeTab==="vista") ? "flex" : "none";
-  vistaCatsEl.style.display   = (activeTab==="vista") ? "flex" : "none";
+  const isVista = activeTab === "vista";
+  const isBoletins = activeTab === "boletins";
+
+  boletinsSubtabs.style.display = isBoletins ? "flex" : "none";
+  vistaLinhasEl.style.display = isVista ? "flex" : "none";
+  vistaCatsEl.style.display   = isVista ? "flex" : "none";
+  vistaCatbar.style.display   = isVista ? "flex" : "none";
 
   if(activeTab==="boletins"){
     const sub = BOLETINS_SUB_TEXT[activeBoletimSub];
@@ -499,7 +560,7 @@ function pdfCard(filePath){
   `;
 }
 
-/** ===== Vista Explodida: categorias por PDFs (mais confiável) ===== */
+/** ===== Vista Explodida: categorias por PDFs ===== */
 function listCategoriasFromPdfs(allPdfPaths, linhaRoot){
   const prefixNorm = normPath(linhaRoot.replace(/\/+$/,"") + "/");
   const cats = new Set();
@@ -520,7 +581,7 @@ function listCategoriasFromPdfs(allPdfPaths, linhaRoot){
       continue;
     }
 
-    // categoria = primeira subpasta (pega o nome original do caminho real)
+    // categoria = primeira subpasta (pega nome original do caminho real)
     const originalPrefix = (linhaRoot.replace(/\/+$/,"") + "/");
     const originalRest = p.slice(originalPrefix.length);
     const originalParts = originalRest.split("/");
@@ -554,11 +615,6 @@ function renderVistaCategoriasTabs(cats, hasGeral){
   if(hasGeral) items.push({key:"", label:"Geral"});
   cats.forEach(c => items.push({key:c, label: prettifyName(c)}));
 
-  if(items.length === 0){
-    vistaCatsEl.innerHTML = "";
-    return;
-  }
-
   vistaCatsEl.innerHTML = items.map(it=>`
     <button class="subtab ${it.key===activeVistaCat ? "active":""}" data-cat="${escapeHtml(it.key)}">
       ${escapeHtml(it.label)}
@@ -576,7 +632,7 @@ function renderVistaCategoriasTabs(cats, hasGeral){
 
   // se a categoria ativa não existir mais, volta pra primeira
   const exists = items.some(it=>it.key===activeVistaCat);
-  if(!exists) activeVistaCat = items[0].key;
+  if(!exists && items.length) activeVistaCat = items[0].key;
 }
 
 function canaisView(query){
@@ -663,16 +719,19 @@ async function render(){
     const { list:cats, hasGeral } = listCategoriasFromPdfs(allPdfPaths, linhaRoot);
     renderVistaCategoriasTabs(cats, hasGeral);
 
+    // Atualiza “faixa” da categoria
+    vistaCatLabel.textContent = activeVistaCat ? prettifyName(activeVistaCat) : "Geral";
+
     let files = [];
 
     if(activeVistaCat === ""){
-      // Geral: PDFs direto na raiz da linha (sem subpasta)
+      // Geral: PDFs direto na raiz da linha
       const linhaRootNorm = normPath(linhaRoot.replace(/\/+$/,"") + "/");
       files = allPdfPaths.filter(p => {
         const pn = normPath(p);
         if(!pn.startsWith(linhaRootNorm)) return false;
         const rest = pn.slice(linhaRootNorm.length);
-        return rest && rest.split("/").length === 1; // só arquivo.pdf
+        return rest && rest.split("/").length === 1;
       });
     } else {
       const catRoot = `${linhaRoot}/${activeVistaCat}`;
