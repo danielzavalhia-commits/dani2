@@ -63,7 +63,6 @@
     }
     .tab.active{background:rgba(255,255,255,.28)}
 
-    /* subtabs (categorias) */
     .subtabs{
       display:flex;
       gap:8px;
@@ -118,11 +117,7 @@
       border-bottom: 1px solid rgba(0,0,0,.06);
       background: rgba(255,255,255,.65);
     }
-    .section-head h3{
-      margin:0;
-      font-size:16px;
-      font-weight:950;
-    }
+    .section-head h3{margin:0;font-size:16px;font-weight:950}
     .count{font-size:12px;color:var(--muted);white-space:nowrap}
 
     .grid{
@@ -162,7 +157,6 @@
       word-break: break-word;
     }
     .meta small{color:var(--muted)}
-
     .actions{margin-top:12px;display:flex;gap:10px;flex-wrap:wrap}
     .btn{
       display:inline-flex;
@@ -271,13 +265,9 @@
 
 <div id="hero" class="hero"></div>
 
-<!-- Subtabs (Vista Explodida - linhas) -->
-<div id="vistaSubtabs" class="subtabs" style="display:none"></div>
+<div id="vistaLinhas" class="subtabs" style="display:none"></div>
+<div id="vistaCategorias" class="subtabs" style="display:none"></div>
 
-<!-- Subtabs (Vista Explodida - categorias automáticas) -->
-<div id="vistaCats" class="subtabs" style="display:none"></div>
-
-<!-- Subtabs (Boletins) -->
 <div id="boletinsSubtabs" class="subtabs" style="display:none">
   <button class="subtab active" data-sub="tecnicos">Boletins Técnicos</button>
   <button class="subtab" data-sub="mao">Boletins Mão de Obra</button>
@@ -285,7 +275,6 @@
 
 <main id="content"></main>
 
-<!-- PDF MODAL -->
 <div id="pdfOverlay" class="overlay" role="dialog" aria-modal="true">
   <div class="modal">
     <div class="modal-head">
@@ -298,7 +287,6 @@
   </div>
 </div>
 
-<!-- CONTATO MODAL -->
 <div id="contactOverlay" class="contact-overlay" role="dialog" aria-modal="true">
   <div class="contact-modal">
     <div class="h">Informações de Contato</div>
@@ -310,16 +298,13 @@
 </div>
 
 <script>
-/** ===== CONFIG DO REPO ===== */
 const OWNER="danielzavalhia-commits";
 const REPO="dani2";
 const BRANCH="main";
 
-/** ===== PASTAS BASE =====
- * raiz confirmada: vista_explodida (sem acento)
- * subpastas com acento e maiúscula (profissional)
- */
 const VISTA_BASE = "vista_explodida";
+
+// UI labels (o “key” tem que bater com o nome real da pasta no GitHub)
 const VISTA_LINHAS = [
   { key:"América", label:"América" },
   { key:"Europa", label:"Europa" },
@@ -330,9 +315,8 @@ const VISTA_LINHAS = [
 const BOLETINS_TECNICOS_ROOT = "boletins/tecnicos";
 const BOLETINS_MAO_ROOT = "boletins/mao_de_obra";
 
-/** ===== HERO TEXTOS ===== */
 const HERO_TEXT = {
-  vista: { title:"Vista Explodida", desc:"Selecione a linha e a categoria para visualizar as peças dos equipamentos." },
+  vista: { title:"Vista Explodida", desc:"Selecione a linha e a categoria para visualizar os PDFs de peças." },
   boletins: { title:"Boletins", desc:"Selecione o tipo de boletim para visualizar os PDFs atualizados automaticamente." },
   canais: { title:"Canais de Atendimento – Tramontina Profissional | Farroupilha", desc:"Ordens de Serviço • Suporte Técnico • Promotores Técnicos" }
 };
@@ -341,7 +325,6 @@ const BOLETINS_SUB_TEXT = {
   mao: { title: "Boletins Mão de Obra", desc: "Boletins voltados a mão de obra e procedimentos." }
 };
 
-/** ===== CANAIS ===== */
 const CANAIS = [
   { nome:"Thaís", funcao:"Atendimento – Abertura de OS (Manutenção)", email:"atendimentocozinhas.far@tramontina.com", tel:"+55 (54) 98153-6033", wa:"https://wa.me/5554981536033" },
   { nome:"Adalberto", funcao:"Suporte Técnico – OS (Manutenção)", email:"adalberto.souto@tramontina.com", tel:"+55 (54) 99243-7971", wa:"https://wa.me/5554992437971" },
@@ -353,23 +336,30 @@ const CANAIS = [
   { nome:"Josué", funcao:"Promotor Técnico – São Paulo (SP)", email:"josue.rocha@tramontina.com", tel:"+55 (11) 91499-5839", wa:"https://wa.me/5511914995839" }
 ];
 
-/** ===== UI ===== */
 const hero = document.getElementById("hero");
 const content = document.getElementById("content");
 const q = document.getElementById("q");
 const tabs = [...document.querySelectorAll(".tab")];
+
+const vistaLinhasEl = document.getElementById("vistaLinhas");
+const vistaCatsEl = document.getElementById("vistaCategorias");
 const boletinsSubtabs = document.getElementById("boletinsSubtabs");
-const vistaSubtabs = document.getElementById("vistaSubtabs");
-const vistaCats = document.getElementById("vistaCats");
 
 let activeTab = "vista";
 let activeBoletimSub = "tecnicos";
 
-let activeVistaLinha = "América";
-let activeVistaCategoria = ""; // subpasta dentro da linha
+let activeVistaLinha = VISTA_LINHAS[0].key;
+let activeVistaCat = ""; // "" = Geral
 
-/** ===== Helpers ===== */
-function isPdf(path){ return path.toLowerCase().endsWith(".pdf"); }
+function isPdf(p){ return (p||"").toLowerCase().endsWith(".pdf"); }
+function escapeHtml(str){
+  return String(str)
+    .replaceAll("&","&amp;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#39;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;");
+}
 function prettifyName(s){
   return String(s)
     .replace(/[_-]+/g," ")
@@ -390,18 +380,8 @@ function startsWithFolder(filePath, folderRoot){
 function pageHrefFor(filePath){
   return new URL(filePath.replace(/^\/+/,""), window.location.href).href;
 }
-function escapeHtml(str){
-  return String(str)
-    .replaceAll("&","&amp;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#39;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;");
-}
 
-/** ===== GitHub tree cache ===== */
 let TREE = null;
-
 async function getBranchSha(){
   const url = `https://api.github.com/repos/${OWNER}/${REPO}/branches/${BRANCH}`;
   const res = await fetch(url, { headers: { "Accept":"application/vnd.github+json" }});
@@ -416,11 +396,11 @@ async function getRepoTree(){
   const res = await fetch(url, { headers: { "Accept":"application/vnd.github+json" }});
   if(!res.ok) throw new Error(`Não consegui listar os arquivos (HTTP ${res.status}).`);
   const data = await res.json();
-  TREE = (data.tree || []).filter(x => x.type === "blob").map(x => x.path);
+  // mantém paths de blobs e trees
+  TREE = (data.tree || []).map(x => ({ path:x.path, type:x.type }));
   return TREE;
 }
 
-/** ===== PDF modal (Visualizar) ===== */
 function openPdf(title, url){
   document.getElementById("pdfTitle").textContent = title;
   const viewer = "https://docs.google.com/gview?embedded=1&url=" + encodeURIComponent(url);
@@ -435,38 +415,28 @@ document.getElementById("pdfOverlay").addEventListener("click", (e)=>{
   if(e.target.id === "pdfOverlay") closePdf();
 });
 
-/** ===== Contato modal ===== */
 function showContactFromButton(btn){
   const nome = btn.dataset.nome;
   const funcao = btn.dataset.funcao;
   const email = btn.dataset.email;
   const tel = btn.dataset.tel;
-
   document.getElementById("contactBody").innerHTML =
     `<b>Nome:</b> ${escapeHtml(nome)}<br>
      <b>Função:</b> ${escapeHtml(funcao)}<br>
      <b>E-mail:</b> ${escapeHtml(email)}<br>
      <b>Telefone:</b> ${escapeHtml(tel)}`;
-
   document.getElementById("contactOverlay").style.display = "flex";
 }
-function closeContact(){
-  document.getElementById("contactOverlay").style.display = "none";
-}
-document.getElementById("contactOverlay").addEventListener("click", (e)=>{
-  if(e.target.id === "contactOverlay") closeContact();
-});
-document.addEventListener("keydown", (e)=>{
-  if(e.key === "Escape"){ closePdf(); closeContact(); }
-});
+function closeContact(){ document.getElementById("contactOverlay").style.display = "none"; }
+document.getElementById("contactOverlay").addEventListener("click",(e)=>{ if(e.target.id==="contactOverlay") closeContact(); });
+document.addEventListener("keydown",(e)=>{ if(e.key==="Escape"){ closePdf(); closeContact(); } });
 
-/** ===== Render blocks ===== */
 function setHero(){
-  boletinsSubtabs.style.display = (activeTab === "boletins") ? "flex" : "none";
-  vistaSubtabs.style.display = (activeTab === "vista") ? "flex" : "none";
-  vistaCats.style.display = (activeTab === "vista") ? "flex" : "none";
+  boletinsSubtabs.style.display = (activeTab==="boletins") ? "flex" : "none";
+  vistaLinhasEl.style.display = (activeTab==="vista") ? "flex" : "none";
+  vistaCatsEl.style.display   = (activeTab==="vista") ? "flex" : "none";
 
-  if(activeTab === "boletins"){
+  if(activeTab==="boletins"){
     const sub = BOLETINS_SUB_TEXT[activeBoletimSub];
     hero.innerHTML = `
       <img src="assets/logo_tramontina.png" alt="Tramontina">
@@ -512,72 +482,84 @@ function pdfCard(filePath){
   `;
 }
 
-/** ===== Vista Explodida: subtabs automáticas por subpastas ===== */
-function buildVistaLinhasTabs(){
-  vistaSubtabs.innerHTML = VISTA_LINHAS.map(l => `
+/** ===== Vista Explodida: categorias por PASTA (tree) ===== */
+function renderVistaLinhasTabs(){
+  vistaLinhasEl.innerHTML = VISTA_LINHAS.map(l => `
     <button class="subtab ${l.key===activeVistaLinha ? "active":""}" data-linha="${escapeHtml(l.key)}">
       ${escapeHtml(l.label)}
     </button>
   `).join("");
 
-  [...vistaSubtabs.querySelectorAll(".subtab")].forEach(btn=>{
+  vistaLinhasEl.querySelectorAll(".subtab").forEach(btn=>{
     btn.addEventListener("click", ()=>{
-      [...vistaSubtabs.querySelectorAll(".subtab")].forEach(x=>x.classList.remove("active"));
+      vistaLinhasEl.querySelectorAll(".subtab").forEach(x=>x.classList.remove("active"));
       btn.classList.add("active");
       activeVistaLinha = btn.dataset.linha;
-      activeVistaCategoria = "";
+      activeVistaCat = "";
       render();
     });
   });
 }
 
-function getDirectChildFolder(root, filePath){
-  // root: vista_explodida/Europa
-  // filePath: vista_explodida/Europa/Fritadeira/abc.pdf => returns "Fritadeira"
-  // filePath: vista_explodida/Europa/abc.pdf => returns ""
-  const r = root.replace(/\/+$/,"") + "/";
-  if(!filePath.startsWith(r)) return null;
-  const rest = filePath.slice(r.length);
-  const parts = rest.split("/");
-  if(parts.length >= 2) return parts[0];
-  return "";
-}
+function listCategoriasFromTree(treeItems, linhaRoot){
+  // pega subpastas DIRETAS dentro de linhaRoot, usando itens type:"tree"
+  // exemplo: linhaRoot = "vista_explodida/América"
+  const prefix = linhaRoot.replace(/\/+$/,"") + "/";
+  const cats = new Set();
+  let hasGeral = false;
 
-function buildAutoCategories(allPdfs, root){
-  const set = new Set();
-  let hasRootFiles = false;
+  for(const it of treeItems){
+    const p = it.path;
+    if(!p.startsWith(prefix)) continue;
 
-  for(const p of allPdfs){
-    const child = getDirectChildFolder(root, p);
-    if(child === null) continue;
-    if(child === "") hasRootFiles = true;
-    else set.add(child);
+    const rest = p.slice(prefix.length);
+    if(!rest) continue;
+    const parts = rest.split("/");
+
+    // pdf direto na raiz -> Geral
+    if(it.type==="blob" && isPdf(p) && parts.length===1){
+      hasGeral = true;
+    }
+
+    // subpasta direta
+    if(it.type==="tree" && parts.length===1){
+      cats.add(parts[0]);
+    }
   }
-  const categories = [...set].sort((a,b)=>a.localeCompare(b,"pt-BR"));
-  return { categories, hasRootFiles };
+
+  const list = [...cats].sort((a,b)=>a.localeCompare(b,"pt-BR"));
+  return { list, hasGeral };
 }
 
-function renderVistaCategories(categories, hasRootFiles){
+function renderVistaCategoriasTabs(cats, hasGeral){
   const items = [];
-  if(hasRootFiles) items.push({key:"", label:"Geral"});
-  for(const c of categories) items.push({key:c, label: prettifyName(c)});
+  if(hasGeral) items.push({key:"", label:"Geral"});
+  cats.forEach(c => items.push({key:c, label: prettifyName(c)}));
 
-  vistaCats.innerHTML = items.length ? items.map(it=>`
-    <button class="subtab ${it.key===activeVistaCategoria ? "active":""}" data-cat="${escapeHtml(it.key)}">
+  if(items.length===0){
+    vistaCatsEl.innerHTML = "";
+    return;
+  }
+
+  vistaCatsEl.innerHTML = items.map(it=>`
+    <button class="subtab ${it.key===activeVistaCat ? "active":""}" data-cat="${escapeHtml(it.key)}">
       ${escapeHtml(it.label)}
     </button>
-  `).join("") : "";
+  `).join("");
 
-  vistaCats.style.display = items.length ? "flex" : "none";
-
-  vistaCats.querySelectorAll(".subtab").forEach(btn=>{
+  vistaCatsEl.querySelectorAll(".subtab").forEach(btn=>{
     btn.addEventListener("click", ()=>{
-      vistaCats.querySelectorAll(".subtab").forEach(x=>x.classList.remove("active"));
+      vistaCatsEl.querySelectorAll(".subtab").forEach(x=>x.classList.remove("active"));
       btn.classList.add("active");
-      activeVistaCategoria = btn.dataset.cat || "";
+      activeVistaCat = btn.dataset.cat || "";
       render();
     });
   });
+
+  // se não tem ativa, ativa primeira
+  if(activeVistaCat===null || typeof activeVistaCat==="undefined") activeVistaCat="";
+  const exists = items.some(it=>it.key===activeVistaCat);
+  if(!exists) activeVistaCat = items[0].key;
 }
 
 function canaisView(query){
@@ -616,7 +598,6 @@ function canaisView(query){
   );
 }
 
-/** ===== Render principal ===== */
 async function render(){
   const query = (q.value || "").trim().toLowerCase();
   setHero();
@@ -626,83 +607,76 @@ async function render(){
     return;
   }
 
-  let allFiles = [];
+  let treeItems = [];
   try{
-    allFiles = await getRepoTree();
+    treeItems = await getRepoTree();
   }catch(e){
-    content.innerHTML = sectionShell("Erro", "", `<div class="empty">${escapeHtml(e.message || String(e))}</div>`);
+    content.innerHTML = sectionShell("Erro","",`<div class="empty">${escapeHtml(e.message || String(e))}</div>`);
     return;
   }
 
-  const allPdfs = allFiles.filter(isPdf);
+  const allPdfPaths = treeItems
+    .filter(x => x.type==="blob" && isPdf(x.path))
+    .map(x => x.path);
 
-  // === BOLETINS ===
+  // BOLETINS
   if(activeTab === "boletins"){
     const root = (activeBoletimSub === "tecnicos") ? BOLETINS_TECNICOS_ROOT : BOLETINS_MAO_ROOT;
     const label = (activeBoletimSub === "tecnicos") ? "Boletins Técnicos" : "Boletins Mão de Obra";
 
-    let files = allPdfs.filter(p => startsWithFolder(p, root));
+    let files = allPdfPaths.filter(p => startsWithFolder(p, root));
     if(query) files = files.filter(p => p.toLowerCase().includes(query));
     files.sort((a,b)=>a.localeCompare(b,"pt-BR"));
 
     content.innerHTML = sectionShell(
       label,
       `${files.length} arquivo(s)`,
-      files.length
-        ? `<div class="grid">${files.map(pdfCard).join("")}</div>`
-        : `<div class="empty">Nenhum PDF encontrado em <b>/${escapeHtml(root)}</b>.</div>`
+      files.length ? `<div class="grid">${files.map(pdfCard).join("")}</div>`
+                   : `<div class="empty">Nenhum PDF encontrado em <b>/${escapeHtml(root)}</b>.</div>`
     );
     return;
   }
 
-  // === VISTA EXPLODIDA ===
+  // VISTA
   if(activeTab === "vista"){
-    buildVistaLinhasTabs();
+    renderVistaLinhasTabs();
 
     const linhaRoot = `${VISTA_BASE}/${activeVistaLinha}`;
 
-    // Detecta categorias automaticamente (subpastas do root da linha)
-    const { categories, hasRootFiles } = buildAutoCategories(allPdfs, linhaRoot);
+    // categorias por PASTA (tree)
+    const { list:cats, hasGeral } = listCategoriasFromTree(treeItems, linhaRoot);
 
-    // escolha automática se não houver seleção
-    if(activeVistaCategoria === "" && !hasRootFiles && categories.length > 0){
-      activeVistaCategoria = categories[0];
-    }
-    if(categories.length === 0 && hasRootFiles){
-      activeVistaCategoria = "";
-    }
+    // Se não tem tree category mas tem PDFs dentro de subpastas (sem ter “tree” explícito) - fallback:
+    // (pode acontecer se o GitHub não listar tree de forma esperada em alguns casos raros)
+    // Ainda assim a listagem de PDFs vai funcionar quando o cat for escolhido manualmente.
+    renderVistaCategoriasTabs(cats, hasGeral);
 
-    renderVistaCategories(categories, hasRootFiles);
-
-    // Filtra PDFs pela seleção
-    let files = allPdfs.filter(p => startsWithFolder(p, linhaRoot));
-
-    if(activeVistaCategoria){
-      const catRoot = `${linhaRoot}/${activeVistaCategoria}`;
-      files = files.filter(p => startsWithFolder(p, catRoot));
+    // Filtra PDFs conforme cat
+    let files;
+    if(activeVistaCat === ""){
+      // Geral: PDFs direto na raiz da linha
+      files = allPdfPaths.filter(p => startsWithFolder(p, linhaRoot) && p.split("/").length === linhaRoot.split("/").length + 1);
     } else {
-      files = files.filter(p => getDirectChildFolder(linhaRoot, p) === "");
+      const catRoot = `${linhaRoot}/${activeVistaCat}`;
+      files = allPdfPaths.filter(p => startsWithFolder(p, catRoot));
     }
 
     if(query) files = files.filter(p => p.toLowerCase().includes(query));
     files.sort((a,b)=>a.localeCompare(b,"pt-BR"));
 
-    const title = activeVistaCategoria
-      ? `${activeVistaLinha} • ${prettifyName(activeVistaCategoria)}`
-      : `${activeVistaLinha} • Geral`;
+    const title = activeVistaCat ? `${activeVistaLinha} • ${prettifyName(activeVistaCat)}` : `${activeVistaLinha} • Geral`;
 
     content.innerHTML = sectionShell(
       title,
       `${files.length} arquivo(s)`,
-      files.length
-        ? `<div class="grid">${files.map(pdfCard).join("")}</div>`
-        : `<div class="empty">Nenhum PDF encontrado nesta seleção.</div>`
+      files.length ? `<div class="grid">${files.map(pdfCard).join("")}</div>`
+                   : `<div class="empty">Nenhum PDF encontrado nesta seleção.</div>`
     );
     return;
   }
 }
 
-/** ===== Tabs topo ===== */
+// tabs topo
 tabs.forEach(b=>{
   b.addEventListener("click", ()=>{
     tabs.forEach(x=>x.classList.remove("active"));
@@ -712,7 +686,7 @@ tabs.forEach(b=>{
   });
 });
 
-/** ===== Subtabs boletins ===== */
+// subtabs boletins
 document.querySelectorAll("#boletinsSubtabs .subtab").forEach(s=>{
   s.addEventListener("click", ()=>{
     document.querySelectorAll("#boletinsSubtabs .subtab").forEach(x=>x.classList.remove("active"));
@@ -722,7 +696,7 @@ document.querySelectorAll("#boletinsSubtabs .subtab").forEach(s=>{
   });
 });
 
-/** ===== Busca ===== */
+// busca
 q.addEventListener("input", ()=>render());
 
 render();
