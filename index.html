@@ -501,30 +501,27 @@ function renderVistaLinhasTabs(){
   });
 }
 
-function listCategoriasFromTree(treeItems, linhaRoot){
-  // pega subpastas DIRETAS dentro de linhaRoot, usando itens type:"tree"
-  // exemplo: linhaRoot = "vista_explodida/América"
+function listCategoriasFromPdfs(allPdfPaths, linhaRoot){
   const prefix = linhaRoot.replace(/\/+$/,"") + "/";
   const cats = new Set();
   let hasGeral = false;
 
-  for(const it of treeItems){
-    const p = it.path;
+  for(const p of allPdfPaths){
     if(!p.startsWith(prefix)) continue;
 
     const rest = p.slice(prefix.length);
     if(!rest) continue;
+
     const parts = rest.split("/");
 
-    // pdf direto na raiz -> Geral
-    if(it.type==="blob" && isPdf(p) && parts.length===1){
+    // PDF direto na raiz da linha => Geral
+    if(parts.length === 1){
       hasGeral = true;
+      continue;
     }
 
-    // subpasta direta
-    if(it.type==="tree" && parts.length===1){
-      cats.add(parts[0]);
-    }
+    // primeira subpasta => categoria
+    cats.add(parts[0]);
   }
 
   const list = [...cats].sort((a,b)=>a.localeCompare(b,"pt-BR"));
@@ -644,7 +641,7 @@ async function render(){
     const linhaRoot = `${VISTA_BASE}/${activeVistaLinha}`;
 
     // categorias por PASTA (tree)
-    const { list:cats, hasGeral } = listCategoriasFromTree(treeItems, linhaRoot);
+    const { list:cats, hasGeral } = listCategoriasFromPdfs(allPdfPaths, linhaRoot);
 
     // Se não tem tree category mas tem PDFs dentro de subpastas (sem ter “tree” explícito) - fallback:
     // (pode acontecer se o GitHub não listar tree de forma esperada em alguns casos raros)
