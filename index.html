@@ -315,9 +315,8 @@
   <div class="catbar-inner">
     <div class="catbar-tag">
       <span class="dot"></span>
-      <span id="vistaCatLabel">Categoria</span>
+      <span>Categoria</span>
     </div>
-    <div class="catbar-help">Selecione uma categoria abaixo</div>
   </div>
 </div>
 
@@ -720,7 +719,6 @@ async function render(){
     renderVistaCategoriasTabs(cats, hasGeral);
 
     // Atualiza “faixa” da categoria
-    vistaCatLabel.textContent = activeVistaCat ? prettifyName(activeVistaCat) : "Geral";
 
     let files = [];
 
