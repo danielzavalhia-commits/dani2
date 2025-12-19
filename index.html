@@ -304,7 +304,8 @@ const BRANCH="main";
 
 const VISTA_BASE = "vista_explodida";
 
-// UI labels (o “key” tem que bater com o nome real da pasta no GitHub)
+// UI labels (aqui pode ficar “profissional” com acento)
+// A busca de PDFs/categorias é “tolerante” (ignora acento/maiúscula) — então funciona mesmo se no GitHub estiver diferente.
 const VISTA_LINHAS = [
   { key:"América", label:"América" },
   { key:"Europa", label:"Europa" },
@@ -372,15 +373,24 @@ function prettifyPath(path){
   const base = name.replace(/\.[^/.]+$/, "");
   return prettifyName(base);
 }
-function startsWithFolder(filePath, folderRoot){
-  const a = filePath.replace(/^\/+/,"");
-  const b = folderRoot.replace(/^\/+/,"").replace(/\/+$/,"");
-  return a === b || a.startsWith(b + "/");
-}
 function pageHrefFor(filePath){
   return new URL(filePath.replace(/^\/+/,""), window.location.href).href;
 }
 
+/* ======= MATCH “TOLERANTE” (ignora acento e maiúscula) ======= */
+function normPath(s){
+  return String(s)
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g,"")
+    .toLowerCase();
+}
+function startsWithFolderLoose(filePath, folderRoot){
+  const a = normPath(filePath.replace(/^\/+/,""));
+  const b = normPath(folderRoot.replace(/^\/+/,"").replace(/\/+$/,""));
+  return a === b || a.startsWith(b + "/");
+}
+
+/** Tree cache */
 let TREE = null;
 async function getBranchSha(){
   const url = `https://api.github.com/repos/${OWNER}/${REPO}/branches/${BRANCH}`;
@@ -396,15 +406,18 @@ async function getRepoTree(){
   const res = await fetch(url, { headers: { "Accept":"application/vnd.github+json" }});
   if(!res.ok) throw new Error(`Não consegui listar os arquivos (HTTP ${res.status}).`);
   const data = await res.json();
-  // mantém paths de blobs e trees
   TREE = (data.tree || []).map(x => ({ path:x.path, type:x.type }));
   return TREE;
 }
 
+/** PDF modal */
 function openPdf(title, url){
   document.getElementById("pdfTitle").textContent = title;
+
+  // Visualização “garantida” via Google Viewer (evita baixar em vários PCs)
   const viewer = "https://docs.google.com/gview?embedded=1&url=" + encodeURIComponent(url);
   document.getElementById("pdfFrame").src = viewer;
+
   document.getElementById("pdfOverlay").style.display = "flex";
 }
 function closePdf(){
@@ -415,22 +428,26 @@ document.getElementById("pdfOverlay").addEventListener("click", (e)=>{
   if(e.target.id === "pdfOverlay") closePdf();
 });
 
+/** Contato modal */
 function showContactFromButton(btn){
   const nome = btn.dataset.nome;
   const funcao = btn.dataset.funcao;
   const email = btn.dataset.email;
   const tel = btn.dataset.tel;
+
   document.getElementById("contactBody").innerHTML =
     `<b>Nome:</b> ${escapeHtml(nome)}<br>
      <b>Função:</b> ${escapeHtml(funcao)}<br>
      <b>E-mail:</b> ${escapeHtml(email)}<br>
      <b>Telefone:</b> ${escapeHtml(tel)}`;
+
   document.getElementById("contactOverlay").style.display = "flex";
 }
 function closeContact(){ document.getElementById("contactOverlay").style.display = "none"; }
 document.getElementById("contactOverlay").addEventListener("click",(e)=>{ if(e.target.id==="contactOverlay") closeContact(); });
 document.addEventListener("keydown",(e)=>{ if(e.key==="Escape"){ closePdf(); closeContact(); } });
 
+/** UI shell */
 function setHero(){
   boletinsSubtabs.style.display = (activeTab==="boletins") ? "flex" : "none";
   vistaLinhasEl.style.display = (activeTab==="vista") ? "flex" : "none";
@@ -482,7 +499,38 @@ function pdfCard(filePath){
   `;
 }
 
-/** ===== Vista Explodida: categorias por PASTA (tree) ===== */
+/** ===== Vista Explodida: categorias por PDFs (mais confiável) ===== */
+function listCategoriasFromPdfs(allPdfPaths, linhaRoot){
+  const prefixNorm = normPath(linhaRoot.replace(/\/+$/,"") + "/");
+  const cats = new Set();
+  let hasGeral = false;
+
+  for(const p of allPdfPaths){
+    const pNorm = normPath(p);
+    if(!pNorm.startsWith(prefixNorm)) continue;
+
+    const restNorm = pNorm.slice(prefixNorm.length);
+    if(!restNorm) continue;
+
+    const partsNorm = restNorm.split("/");
+
+    // PDF direto na raiz da linha => Geral
+    if(partsNorm.length === 1){
+      hasGeral = true;
+      continue;
+    }
+
+    // categoria = primeira subpasta (pega o nome original do caminho real)
+    const originalPrefix = (linhaRoot.replace(/\/+$/,"") + "/");
+    const originalRest = p.slice(originalPrefix.length);
+    const originalParts = originalRest.split("/");
+    cats.add(originalParts[0]);
+  }
+
+  const list = [...cats].sort((a,b)=>a.localeCompare(b,"pt-BR"));
+  return { list, hasGeral };
+}
+
 function renderVistaLinhasTabs(){
   vistaLinhasEl.innerHTML = VISTA_LINHAS.map(l => `
     <button class="subtab ${l.key===activeVistaLinha ? "active":""}" data-linha="${escapeHtml(l.key)}">
@@ -495,37 +543,10 @@ function renderVistaLinhasTabs(){
       vistaLinhasEl.querySelectorAll(".subtab").forEach(x=>x.classList.remove("active"));
       btn.classList.add("active");
       activeVistaLinha = btn.dataset.linha;
-      activeVistaCat = "";
+      activeVistaCat = ""; // volta para Geral
       render();
     });
   });
-}
-
-function listCategoriasFromPdfs(allPdfPaths, linhaRoot){
-  const prefix = linhaRoot.replace(/\/+$/,"") + "/";
-  const cats = new Set();
-  let hasGeral = false;
-
-  for(const p of allPdfPaths){
-    if(!p.startsWith(prefix)) continue;
-
-    const rest = p.slice(prefix.length);
-    if(!rest) continue;
-
-    const parts = rest.split("/");
-
-    // PDF direto na raiz da linha => Geral
-    if(parts.length === 1){
-      hasGeral = true;
-      continue;
-    }
-
-    // primeira subpasta => categoria
-    cats.add(parts[0]);
-  }
-
-  const list = [...cats].sort((a,b)=>a.localeCompare(b,"pt-BR"));
-  return { list, hasGeral };
 }
 
 function renderVistaCategoriasTabs(cats, hasGeral){
@@ -533,7 +554,7 @@ function renderVistaCategoriasTabs(cats, hasGeral){
   if(hasGeral) items.push({key:"", label:"Geral"});
   cats.forEach(c => items.push({key:c, label: prettifyName(c)}));
 
-  if(items.length===0){
+  if(items.length === 0){
     vistaCatsEl.innerHTML = "";
     return;
   }
@@ -553,8 +574,7 @@ function renderVistaCategoriasTabs(cats, hasGeral){
     });
   });
 
-  // se não tem ativa, ativa primeira
-  if(activeVistaCat===null || typeof activeVistaCat==="undefined") activeVistaCat="";
+  // se a categoria ativa não existir mais, volta pra primeira
   const exists = items.some(it=>it.key===activeVistaCat);
   if(!exists) activeVistaCat = items[0].key;
 }
@@ -621,8 +641,8 @@ async function render(){
     const root = (activeBoletimSub === "tecnicos") ? BOLETINS_TECNICOS_ROOT : BOLETINS_MAO_ROOT;
     const label = (activeBoletimSub === "tecnicos") ? "Boletins Técnicos" : "Boletins Mão de Obra";
 
-    let files = allPdfPaths.filter(p => startsWithFolder(p, root));
-    if(query) files = files.filter(p => p.toLowerCase().includes(query));
+    let files = allPdfPaths.filter(p => startsWithFolderLoose(p, root));
+    if(query) files = files.filter(p => normPath(p).includes(normPath(query)));
     files.sort((a,b)=>a.localeCompare(b,"pt-BR"));
 
     content.innerHTML = sectionShell(
@@ -634,31 +654,32 @@ async function render(){
     return;
   }
 
-  // VISTA
+  // VISTA EXPLODIDA
   if(activeTab === "vista"){
     renderVistaLinhasTabs();
 
     const linhaRoot = `${VISTA_BASE}/${activeVistaLinha}`;
 
-    // categorias por PASTA (tree)
     const { list:cats, hasGeral } = listCategoriasFromPdfs(allPdfPaths, linhaRoot);
-
-    // Se não tem tree category mas tem PDFs dentro de subpastas (sem ter “tree” explícito) - fallback:
-    // (pode acontecer se o GitHub não listar tree de forma esperada em alguns casos raros)
-    // Ainda assim a listagem de PDFs vai funcionar quando o cat for escolhido manualmente.
     renderVistaCategoriasTabs(cats, hasGeral);
 
-    // Filtra PDFs conforme cat
-    let files;
+    let files = [];
+
     if(activeVistaCat === ""){
-      // Geral: PDFs direto na raiz da linha
-      files = allPdfPaths.filter(p => startsWithFolder(p, linhaRoot) && p.split("/").length === linhaRoot.split("/").length + 1);
+      // Geral: PDFs direto na raiz da linha (sem subpasta)
+      const linhaRootNorm = normPath(linhaRoot.replace(/\/+$/,"") + "/");
+      files = allPdfPaths.filter(p => {
+        const pn = normPath(p);
+        if(!pn.startsWith(linhaRootNorm)) return false;
+        const rest = pn.slice(linhaRootNorm.length);
+        return rest && rest.split("/").length === 1; // só arquivo.pdf
+      });
     } else {
       const catRoot = `${linhaRoot}/${activeVistaCat}`;
-      files = allPdfPaths.filter(p => startsWithFolder(p, catRoot));
+      files = allPdfPaths.filter(p => startsWithFolderLoose(p, catRoot));
     }
 
-    if(query) files = files.filter(p => p.toLowerCase().includes(query));
+    if(query) files = files.filter(p => normPath(p).includes(normPath(query)));
     files.sort((a,b)=>a.localeCompare(b,"pt-BR"));
 
     const title = activeVistaCat ? `${activeVistaLinha} • ${prettifyName(activeVistaCat)}` : `${activeVistaLinha} • Geral`;
@@ -673,7 +694,7 @@ async function render(){
   }
 }
 
-// tabs topo
+/** Tabs topo */
 tabs.forEach(b=>{
   b.addEventListener("click", ()=>{
     tabs.forEach(x=>x.classList.remove("active"));
@@ -683,7 +704,7 @@ tabs.forEach(b=>{
   });
 });
 
-// subtabs boletins
+/** Subtabs boletins */
 document.querySelectorAll("#boletinsSubtabs .subtab").forEach(s=>{
   s.addEventListener("click", ()=>{
     document.querySelectorAll("#boletinsSubtabs .subtab").forEach(x=>x.classList.remove("active"));
@@ -693,7 +714,7 @@ document.querySelectorAll("#boletinsSubtabs .subtab").forEach(s=>{
   });
 });
 
-// busca
+/** Busca */
 q.addEventListener("input", ()=>render());
 
 render();
