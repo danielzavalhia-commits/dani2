@@ -1,161 +1,261 @@
 <!doctype html>
 <html lang="pt-br">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Portal de Documentos – Tramontina</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Portal de Documentos – Tramontina</title>
 
-<style>
-:root{
-  --blue:#003087;
-  --blue2:#1f5fe0;
-  --bg:#f4f6fb;
-  --ink:#0b1220;
-  --muted:#5b6b85;
-  --card:#ffffff;
-  --radius:16px;
-  --shadow:0 12px 26px rgba(0,0,0,.14);
-  --wa:#22c55e;
-}
+  <style>
+    :root{
+      --blue:#003087;
+      --blue2:#1f5fe0;
+      --bg:#f4f6fb;
+      --ink:#0b1220;
+      --muted:#5b6b85;
+      --card:#ffffff;
+      --radius:16px;
+      --shadow:0 12px 26px rgba(0,0,0,.14);
+      --wa:#22c55e;
+      --line: rgba(0,0,0,.10);
+    }
 
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
-  background:linear-gradient(180deg,#fff,var(--bg));
-  color:var(--ink);
-}
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+      background:
+        radial-gradient(900px 420px at 20% -10%, rgba(31,95,224,.18), transparent 55%),
+        radial-gradient(800px 420px at 90% 0%, rgba(0,48,135,.12), transparent 55%),
+        linear-gradient(180deg,#fff,var(--bg));
+      color:var(--ink);
+    }
 
-/* ===== HEADER ===== */
-header{
-  position:sticky;top:0;z-index:100;
-  background:linear-gradient(90deg,var(--blue),var(--blue2));
-  color:#fff;
-}
-.header-inner{max-width:1100px;margin:auto;padding:14px 16px}
-.header-top{display:flex;align-items:center;gap:12px}
-.header-top img{height:38px}
-.header-title{font-size:18px;font-weight:900}
+    /* ===== HEADER ===== */
+    header{
+      position:sticky;top:0;z-index:100;
+      background:linear-gradient(90deg,var(--blue),var(--blue2));
+      color:#fff;
+      border-bottom:1px solid rgba(255,255,255,.18);
+      backdrop-filter: blur(10px);
+    }
+    .header-inner{max-width:1100px;margin:auto;padding:14px 16px}
+    .header-top{display:flex;align-items:center;gap:12px}
+    .header-top img{height:34px; width:auto; display:block}
+    .header-title{font-size:18px;font-weight:900}
 
-.search{margin-top:12px}
-.search input{
-  width:100%;padding:12px 14px;border-radius:14px;border:0;
-  background:rgba(255,255,255,.18);color:#fff;
-}
-.search input::placeholder{color:#e6ecff}
+    .search{margin-top:12px}
+    .search input{
+      width:100%;padding:12px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.20);
+      background:rgba(255,255,255,.14);color:#fff;
+      outline:none;
+    }
+    .search input::placeholder{color:#e6ecff}
 
-.tabs{display:flex;gap:8px;margin-top:12px}
-.tab{
-  background:rgba(255,255,255,.15);
-  border:1px solid rgba(255,255,255,.25);
-  color:#fff;
-  padding:10px 14px;
-  border-radius:14px;
-  font-weight:800;
-  cursor:pointer;
-}
-.tab.active{background:rgba(255,255,255,.28)}
+    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .tab{
+      background:rgba(255,255,255,.15);
+      border:1px solid rgba(255,255,255,.25);
+      color:#fff;
+      padding:10px 14px;
+      border-radius:14px;
+      font-weight:850;
+      cursor:pointer;
+      user-select:none;
+    }
+    .tab.active{background:rgba(255,255,255,.28)}
 
-/* ===== HERO ===== */
-.hero{
-  max-width:1100px;
-  margin:24px auto 10px;
-  padding:0 16px;
-  text-align:center;
-}
-.hero img{height:64px;margin-bottom:12px}
-.hero h2{margin:0;font-size:22px;font-weight:900}
-.hero p{margin:6px 0 0;color:var(--muted)}
+    /* Subtabs (Boletins) */
+    .subtabs{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      justify-content:center;
+      margin: 14px auto 0;
+      max-width:1100px;
+      padding: 0 16px;
+    }
+    .subtab{
+      background:#fff;
+      border:1px solid var(--line);
+      color:var(--ink);
+      padding:10px 14px;
+      border-radius:14px;
+      font-weight:900;
+      cursor:pointer;
+      user-select:none;
+      box-shadow: 0 10px 22px rgba(0,0,0,.08);
+    }
+    .subtab.active{
+      background: rgba(0,48,135,.10);
+      border-color: rgba(0,48,135,.22);
+    }
 
-/* ===== MAIN ===== */
-main{max-width:1100px;margin:auto;padding:16px}
+    /* ===== HERO ===== */
+    .hero{
+      max-width:1100px;
+      margin:22px auto 8px;
+      padding:0 16px;
+      text-align:center;
+    }
+    .hero img{height:64px;margin-bottom:10px; width:auto}
+    .hero h2{margin:0;font-size:22px;font-weight:900}
+    .hero p{margin:6px 0 0;color:var(--muted)}
 
-/* ===== GRID ===== */
-.grid{
-  display:grid;
-  grid-template-columns:repeat(12,1fr);
-  gap:14px;
-}
-.card{
-  grid-column:span 12;
-  background:var(--card);
-  border-radius:var(--radius);
-  box-shadow:var(--shadow);
-  padding:16px;
-}
-@media(min-width:760px){.card{grid-column:span 6}}
-@media(min-width:1050px){.card{grid-column:span 4}}
+    /* ===== MAIN ===== */
+    main{max-width:1100px;margin:auto;padding:16px}
 
-.card h3{margin:0 0 6px;font-size:15px;font-weight:900}
-.card small{color:var(--muted)}
+    .section{
+      background: rgba(255,255,255,.82);
+      border:1px solid rgba(0,0,0,.08);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      margin-bottom: 16px;
+    }
+    .section-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-end;
+      gap:10px;
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(0,0,0,.06);
+      background: rgba(255,255,255,.65);
+    }
+    .section-head h3{
+      margin:0;
+      font-size:16px;
+      font-weight:950;
+    }
+    .count{font-size:12px;color:var(--muted);white-space:nowrap}
 
-.actions{margin-top:12px}
-.btn{
-  display:inline-flex;
-  justify-content:center;
-  align-items:center;
-  padding:10px 14px;
-  border-radius:14px;
-  border:0;
-  font-weight:900;
-  cursor:pointer;
-}
-.btn.primary{background:var(--blue);color:#fff}
-.btn.wa{background:var(--wa);color:#fff}
-.btn.info{background:var(--blue2);color:#fff}
+    /* ===== GRID ===== */
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(12,1fr);
+      gap:14px;
+      padding: 14px;
+    }
+    .card{
+      grid-column:span 12;
+      background:var(--card);
+      border-radius:var(--radius);
+      box-shadow: 0 10px 20px rgba(0,0,0,.10);
+      border:1px solid rgba(0,0,0,.06);
+      padding:16px;
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+    }
+    @media(min-width:760px){.card{grid-column:span 6}}
+    @media(min-width:1050px){.card{grid-column:span 4}}
 
-/* ===== MODAL PDF ===== */
-.overlay{
-  position:fixed;inset:0;display:none;
-  background:rgba(0,0,0,.5);
-  justify-content:center;align-items:center;
-  z-index:200;
-}
-.modal{
-  width:min(1100px,100%);
-  height:86vh;
-  background:#fff;
-  border-radius:18px;
-  display:flex;
-  flex-direction:column;
-  overflow:hidden;
-}
-.modal-head{
-  background:linear-gradient(90deg,var(--blue),var(--blue2));
-  color:#fff;
-  padding:12px 14px;
-  font-weight:900;
-  display:flex;
-  justify-content:space-between;
-}
-.modal-body{flex:1}
-.modal-body iframe{width:100%;height:100%;border:0}
+    .icon{
+      width:42px;height:42px;border-radius:14px;
+      display:grid;place-items:center;
+      background: rgba(0,48,135,.10);
+      border: 1px solid rgba(0,48,135,.18);
+      flex:0 0 auto;
+      font-size:18px;
+    }
+    .meta{flex:1;min-width:0}
+    .meta h4{
+      margin:0 0 6px;
+      font-size:14px;
+      font-weight:950;
+      line-height:1.25;
+      word-break: break-word;
+    }
+    .meta small{color:var(--muted)}
 
-/* ===== CONTATO MODAL ===== */
-.contact-overlay{
-  position:fixed;inset:0;display:none;
-  background:rgba(0,0,0,.5);
-  justify-content:center;align-items:center;
-  z-index:210;
-}
-.contact-modal{
-  background:#fff;
-  border-radius:16px;
-  width:min(520px,100%);
-  box-shadow:var(--shadow);
-}
-.contact-modal .h{
-  background:linear-gradient(90deg,var(--blue),var(--blue2));
-  color:#fff;padding:14px;font-weight:900;
-}
-.contact-modal .b{padding:14px}
-.contact-modal .f{padding:14px}
-.contact-modal .f button{width:100%}
-</style>
+    .actions{margin-top:12px;display:flex;gap:10px;flex-wrap:wrap}
+    .btn{
+      display:inline-flex;
+      justify-content:center;
+      align-items:center;
+      padding:10px 14px;
+      border-radius:14px;
+      border:0;
+      font-weight:950;
+      cursor:pointer;
+      text-decoration:none;
+      user-select:none;
+      min-width: 120px;
+    }
+    .btn.primary{background:var(--blue);color:#fff}
+    .btn.wa{background:var(--wa);color:#fff}
+    .btn.info{background:var(--blue2);color:#fff}
+    .btn.secondary{background: rgba(0,0,0,.06); color: var(--ink); border:1px solid rgba(0,0,0,.10);}
+
+    /* ===== MODAL PDF ===== */
+    .overlay{
+      position:fixed;inset:0;display:none;
+      background:rgba(0,0,0,.5);
+      justify-content:center;align-items:center;
+      z-index:200;
+      padding: 14px;
+    }
+    .modal{
+      width:min(1100px,100%);
+      height:86vh;
+      background:#fff;
+      border-radius:18px;
+      display:flex;
+      flex-direction:column;
+      overflow:hidden;
+      box-shadow: var(--shadow);
+    }
+    .modal-head{
+      background:linear-gradient(90deg,var(--blue),var(--blue2));
+      color:#fff;
+      padding:12px 14px;
+      font-weight:950;
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:center;
+    }
+    .modal-title{
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      font-size: 13px;
+    }
+    .modal-body{flex:1}
+    .modal-body iframe{width:100%;height:100%;border:0}
+
+    /* ===== CONTATO MODAL ===== */
+    .contact-overlay{
+      position:fixed;inset:0;display:none;
+      background:rgba(0,0,0,.5);
+      justify-content:center;align-items:center;
+      z-index:210;
+      padding: 14px;
+    }
+    .contact-modal{
+      background:#fff;
+      border-radius:16px;
+      width:min(560px,100%);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      border: 1px solid rgba(0,0,0,.08);
+    }
+    .contact-modal .h{
+      background:linear-gradient(90deg,var(--blue),var(--blue2));
+      color:#fff;padding:14px;font-weight:950;
+    }
+    .contact-modal .b{padding:14px;line-height:1.5}
+    .contact-modal .f{padding:14px;border-top:1px solid rgba(0,0,0,.08)}
+    .contact-modal .f button{width:100%}
+
+    .empty{
+      padding: 18px;
+      color: var(--muted);
+      text-align:center;
+    }
+  </style>
 </head>
 
 <body>
-
 <header>
   <div class="header-inner">
     <div class="header-top">
@@ -176,23 +276,30 @@ main{max-width:1100px;margin:auto;padding:16px}
 </header>
 
 <div id="hero" class="hero"></div>
+
+<!-- Subtabs (somente em Boletins) -->
+<div id="boletinsSubtabs" class="subtabs" style="display:none">
+  <button class="subtab active" data-sub="tecnicos">Boletins Técnicos</button>
+  <button class="subtab" data-sub="mao">Boletins Mão de Obra</button>
+</div>
+
 <main id="content"></main>
 
 <!-- PDF MODAL -->
-<div id="pdfOverlay" class="overlay">
+<div id="pdfOverlay" class="overlay" role="dialog" aria-modal="true">
   <div class="modal">
     <div class="modal-head">
-      <span id="pdfTitle"></span>
-      <button class="btn" onclick="closePdf()">Fechar</button>
+      <div id="pdfTitle" class="modal-title">Visualizar PDF</div>
+      <button class="btn secondary" onclick="closePdf()">Fechar</button>
     </div>
     <div class="modal-body">
-      <iframe id="pdfFrame"></iframe>
+      <iframe id="pdfFrame" title="Visualizador de PDF"></iframe>
     </div>
   </div>
 </div>
 
 <!-- CONTATO MODAL -->
-<div id="contactOverlay" class="contact-overlay">
+<div id="contactOverlay" class="contact-overlay" role="dialog" aria-modal="true">
   <div class="contact-modal">
     <div class="h">Informações de Contato</div>
     <div class="b" id="contactBody"></div>
@@ -203,101 +310,329 @@ main{max-width:1100px;margin:auto;padding:16px}
 </div>
 
 <script>
+/** ===== CONFIG DO REPO ===== */
 const OWNER="danielzavalhia-commits";
 const REPO="dani2";
 const BRANCH="main";
 
-const HERO_TEXT={
-  ordens:{
-    title:"Ordens de Serviço",
-    desc:"Acesso rápido a documentos operacionais e materiais de apoio."
+/** ===== PASTAS BASE ===== */
+const ORDENS_ROOT = "ordens_servico";
+const BOLETINS_TECNICOS_ROOT = "boletins/tecnicos";
+const BOLETINS_MAO_ROOT = "boletins/mao_de_obra";
+
+/** ===== HERO TEXTOS ===== */
+const HERO_TEXT = {
+  ordens: {
+    title: "Ordens de Serviço",
+    desc: "Acesso rápido a documentos e materiais de apoio para atendimento e manutenção."
   },
-  boletins:{
-    title:"Boletins Técnicos",
-    desc:"Boletins técnicos e de mão de obra atualizados automaticamente."
+  boletins: {
+    title: "Boletins",
+    desc: "Boletins atualizados automaticamente a partir das pastas do repositório."
   },
-  canais:{
-    title:"Canais de Atendimento – Tramontina Profissional | Farroupilha",
-    desc:"Ordens de Serviço • Suporte Técnico • Promotores Técnicos"
+  canais: {
+    title: "Canais de Atendimento – Tramontina Profissional | Farroupilha",
+    desc: "Ordens de Serviço • Suporte Técnico • Promotores Técnicos"
   }
 };
 
-const CANAIS=[
- {n:"Thaís",f:"Atendimento – OS (Manutenção)",e:"atendimentocozinhas.far@tramontina.com",t:"+55 (54) 98153-6033",w:"https://wa.me/5554981536033"},
- {n:"Adalberto",f:"Suporte Técnico – OS (Manutenção)",e:"adalberto.souto@tramontina.com",t:"+55 (54) 99243-7971",w:"https://wa.me/5554992437971"},
- {n:"Patrícia",f:"Atendimento – OS (Instalação)",e:"atendimentocozinhas.far@tramontina.com",t:"+55 (54) 99140-5949",w:"https://wa.me/5554991405949"},
- {n:"Mauricio",f:"Suporte Técnico – OS (Instalação)",e:"mauricio.lima@tramontina.com",t:"+55 (54) 99205-7821",w:"https://wa.me/5554992057821"},
- {n:"Lucas",f:"Promotor Técnico – Sudeste/Nordeste",e:"lucas.bin@tramontina.com",t:"+55 (54) 98153-6011",w:"https://wa.me/5554981536011"},
- {n:"Rafael",f:"Promotor Técnico – Sul/Centro-Oeste/Norte",e:"rafael.silva@tramontina.com",t:"+55 (54) 99101-2025",w:"https://wa.me/5554991012025"},
- {n:"Robson",f:"Suporte Técnico – SP",e:"robson.menezes@tramontina.com",t:"+55 (11) 96171-8289",w:"https://wa.me/5511961718289"},
- {n:"Josué",f:"Promotor Técnico – SP",e:"josue.rocha@tramontina.com",t:"+55 (11) 91499-5839",w:"https://wa.me/5511914995839"}
+const BOLETINS_SUB_TEXT = {
+  tecnicos: { title: "Boletins Técnicos", desc: "Boletins técnicos para suporte e orientações." },
+  mao: { title: "Boletins Mão de Obra", desc: "Boletins voltados a mão de obra e procedimentos." }
+};
+
+/** ===== CANAIS ===== */
+const CANAIS = [
+  { nome:"Thaís", funcao:"Atendimento – Abertura de OS (Manutenção)", email:"atendimentocozinhas.far@tramontina.com", tel:"+55 (54) 98153-6033", wa:"https://wa.me/5554981536033" },
+  { nome:"Adalberto", funcao:"Suporte Técnico – OS (Manutenção)", email:"adalberto.souto@tramontina.com", tel:"+55 (54) 99243-7971", wa:"https://wa.me/5554992437971" },
+  { nome:"Patrícia", funcao:"Atendimento – OS (Instalação)", email:"atendimentocozinhas.far@tramontina.com", tel:"+55 (54) 99140-5949", wa:"https://wa.me/5554991405949" },
+  { nome:"Mauricio", funcao:"Suporte Técnico – OS (Instalação)", email:"mauricio.lima@tramontina.com", tel:"+55 (54) 99205-7821", wa:"https://wa.me/5554992057821" },
+  { nome:"Lucas", funcao:"Promotor Técnico – Regiões Sudeste e Nordeste", email:"lucas.bin@tramontina.com", tel:"+55 (54) 98153-6011", wa:"https://wa.me/5554981536011" },
+  { nome:"Rafael", funcao:"Promotor Técnico – Regiões Sul, Centro-Oeste e Norte", email:"rafael.silva@tramontina.com", tel:"+55 (54) 99101-2025", wa:"https://wa.me/5554991012025" },
+  { nome:"Robson", funcao:"Suporte Técnico – São Paulo (SP)", email:"robson.menezes@tramontina.com", tel:"+55 (11) 96171-8289", wa:"https://wa.me/5511961718289" },
+  { nome:"Josué", funcao:"Promotor Técnico – São Paulo (SP)", email:"josue.rocha@tramontina.com", tel:"+55 (11) 91499-5839", wa:"https://wa.me/5511914995839" }
 ];
 
-let tab="ordens";
-const hero=document.getElementById("hero");
-const content=document.getElementById("content");
-const q=document.getElementById("q");
+/** ===== UI ===== */
+const hero = document.getElementById("hero");
+const content = document.getElementById("content");
+const q = document.getElementById("q");
+const boletinsSubtabs = document.getElementById("boletinsSubtabs");
+const tabs = [...document.querySelectorAll(".tab")];
+const subtabs = [...document.querySelectorAll(".subtab")];
 
-function setHero(){
-  hero.innerHTML=`
-    <img src="assets/logo_tramontina.png">
-    <h2>${HERO_TEXT[tab].title}</h2>
-    <p>${HERO_TEXT[tab].desc}</p>`;
+let activeTab = "ordens";
+let activeBoletimSub = "tecnicos";
+
+/** ===== Helpers ===== */
+function isPdf(path){ return path.toLowerCase().endsWith(".pdf"); }
+function prettify(path){
+  const name = path.split("/").pop() || path;
+  const base = name.replace(/\.[^/.]+$/, "");
+  return base
+    .replace(/[_-]+/g," ")
+    .replace(/\s+/g," ")
+    .trim()
+    .replace(/\b\w/g, c=>c.toUpperCase());
+}
+function startsWithFolder(filePath, folderRoot){
+  const a = filePath.replace(/^\/+/,"");
+  const b = folderRoot.replace(/^\/+/,"").replace(/\/+$/,"");
+  return a === b || a.startsWith(b + "/");
+}
+function pageHrefFor(filePath){
+  return new URL(filePath.replace(/^\/+/,""), window.location.href).href;
+}
+function escapeHtml(str){
+  return String(str)
+    .replaceAll("&","&amp;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#39;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;");
 }
 
-function openPdf(title,url){
-  document.getElementById("pdfTitle").textContent=title;
-  document.getElementById("pdfFrame").src=
-    "https://docs.google.com/gview?embedded=1&url="+encodeURIComponent(url);
-  document.getElementById("pdfOverlay").style.display="flex";
+/** ===== GitHub tree cache ===== */
+let TREE = null;
+
+async function getBranchSha(){
+  const url = `https://api.github.com/repos/${OWNER}/${REPO}/branches/${BRANCH}`;
+  const res = await fetch(url, { headers: { "Accept":"application/vnd.github+json" }});
+  if(!res.ok) throw new Error(`Não consegui ler a branch ${BRANCH} (HTTP ${res.status}).`);
+  const data = await res.json();
+  return data?.commit?.sha;
+}
+
+async function getRepoTree(){
+  if(TREE) return TREE;
+  const sha = await getBranchSha();
+  const url = `https://api.github.com/repos/${OWNER}/${REPO}/git/trees/${sha}?recursive=1`;
+  const res = await fetch(url, { headers: { "Accept":"application/vnd.github+json" }});
+  if(!res.ok) throw new Error(`Não consegui listar os arquivos (HTTP ${res.status}).`);
+  const data = await res.json();
+  TREE = (data.tree || []).filter(x => x.type === "blob").map(x => x.path);
+  return TREE;
+}
+
+/** ===== PDF modal (Visualizar) ===== */
+function openPdf(title, url){
+  document.getElementById("pdfTitle").textContent = title;
+
+  // Viewer estável no iframe
+  const viewer = "https://docs.google.com/gview?embedded=1&url=" + encodeURIComponent(url);
+  document.getElementById("pdfFrame").src = viewer;
+
+  document.getElementById("pdfOverlay").style.display = "flex";
 }
 function closePdf(){
-  document.getElementById("pdfOverlay").style.display="none";
-  document.getElementById("pdfFrame").src="";
+  document.getElementById("pdfOverlay").style.display = "none";
+  document.getElementById("pdfFrame").src = "";
 }
+document.getElementById("pdfOverlay").addEventListener("click", (e)=>{
+  if(e.target.id === "pdfOverlay") closePdf();
+});
 
-function showContact(c){
-  document.getElementById("contactBody").innerHTML=
-    `<b>Nome:</b> ${c.n}<br>
-     <b>Função:</b> ${c.f}<br>
-     <b>E-mail:</b> ${c.e}<br>
-     <b>Telefone:</b> ${c.t}`;
-  document.getElementById("contactOverlay").style.display="flex";
+/** ===== Contato modal ===== */
+function showContactFromButton(btn){
+  const nome = btn.dataset.nome;
+  const funcao = btn.dataset.funcao;
+  const email = btn.dataset.email;
+  const tel = btn.dataset.tel;
+
+  document.getElementById("contactBody").innerHTML =
+    `<b>Nome:</b> ${escapeHtml(nome)}<br>
+     <b>Função:</b> ${escapeHtml(funcao)}<br>
+     <b>E-mail:</b> ${escapeHtml(email)}<br>
+     <b>Telefone:</b> ${escapeHtml(tel)}`;
+
+  document.getElementById("contactOverlay").style.display = "flex";
 }
 function closeContact(){
-  document.getElementById("contactOverlay").style.display="none";
+  document.getElementById("contactOverlay").style.display = "none";
+}
+document.getElementById("contactOverlay").addEventListener("click", (e)=>{
+  if(e.target.id === "contactOverlay") closeContact();
+});
+
+document.addEventListener("keydown", (e)=>{
+  if(e.key === "Escape"){ closePdf(); closeContact(); }
+});
+
+/** ===== Render pieces ===== */
+function setHero(){
+  // Mostra subtabs somente em "boletins"
+  boletinsSubtabs.style.display = (activeTab === "boletins") ? "flex" : "none";
+
+  // Título/descritivo do hero:
+  if(activeTab === "boletins"){
+    const sub = BOLETINS_SUB_TEXT[activeBoletimSub];
+    hero.innerHTML = `
+      <img src="assets/logo_tramontina.png" alt="Tramontina">
+      <h2>${escapeHtml(sub.title)}</h2>
+      <p>${escapeHtml(sub.desc)}</p>
+    `;
+  } else {
+    const h = HERO_TEXT[activeTab];
+    hero.innerHTML = `
+      <img src="assets/logo_tramontina.png" alt="Tramontina">
+      <h2>${escapeHtml(h.title)}</h2>
+      <p>${escapeHtml(h.desc)}</p>
+    `;
+  }
 }
 
+function sectionShell(title, countText, innerHtml){
+  return `
+    <section class="section">
+      <div class="section-head">
+        <h3>${escapeHtml(title)}</h3>
+        <div class="count">${countText || ""}</div>
+      </div>
+      ${innerHtml}
+    </section>
+  `;
+}
+
+function pdfCard(filePath){
+  const title = prettify(filePath);
+  const url = pageHrefFor(filePath);
+  return `
+    <div class="card">
+      <div class="icon">📄</div>
+      <div class="meta">
+        <h4>${escapeHtml(title)}</h4>
+        <small>PDF</small>
+        <div class="actions">
+          <button class="btn primary" onclick="openPdf(${JSON.stringify(title)}, ${JSON.stringify(url)})">Visualizar</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function canaisView(query){
+  const filtered = CANAIS.filter(c=>{
+    if(!query) return true;
+    return (c.nome + " " + c.funcao + " " + c.email).toLowerCase().includes(query);
+  });
+
+  return sectionShell(
+    "Canais de Atendimento",
+    `${filtered.length} contato(s)`,
+    `
+      <div class="grid">
+        ${filtered.map(c => `
+          <div class="card">
+            <div class="icon">👤</div>
+            <div class="meta">
+              <h4>${escapeHtml(c.nome)}</h4>
+              <small>${escapeHtml(c.funcao)}<br><b>E-mail:</b> ${escapeHtml(c.email)}</small>
+              <div class="actions">
+                <a class="btn wa" target="_blank" rel="noopener" href="${c.wa}">WhatsApp</a>
+                <button
+                  class="btn info"
+                  data-nome="${escapeHtml(c.nome)}"
+                  data-funcao="${escapeHtml(c.funcao)}"
+                  data-email="${escapeHtml(c.email)}"
+                  data-tel="${escapeHtml(c.tel)}"
+                  onclick="showContactFromButton(this)"
+                >Mostrar contato</button>
+              </div>
+            </div>
+          </div>
+        `).join("")}
+      </div>
+    `
+  );
+}
+
+/** ===== Main render ===== */
 async function render(){
+  const query = (q.value || "").trim().toLowerCase();
   setHero();
 
-  if(tab==="canais"){
-    content.innerHTML=`
-      <div class="grid">
-        ${CANAIS.map(c=>`
-          <div class="card">
-            <h3>${c.n}</h3>
-            <small>${c.f}<br>E-mail: ${c.e}</small>
-            <div class="actions">
-              <a class="btn wa" href="${c.w}" target="_blank">WhatsApp</a>
-              <button class="btn info" onclick='showContact(${JSON.stringify(c)})'>Mostrar contato</button>
-            </div>
-          </div>`).join("")}
-      </div>`;
+  // CANAIS
+  if(activeTab === "canais"){
+    content.innerHTML = canaisView(query);
     return;
   }
 
-  content.innerHTML="<p style='text-align:center;color:#666'>Conteúdo automático dos PDFs (já funcionando).</p>";
+  // PDF listagens
+  let allFiles = [];
+  try{
+    allFiles = await getRepoTree();
+  }catch(e){
+    content.innerHTML = sectionShell(
+      "Erro",
+      "",
+      `<div class="empty">${escapeHtml(e.message || String(e))}</div>`
+    );
+    return;
+  }
+
+  // Filtra PDFs
+  const allPdfs = allFiles.filter(isPdf);
+
+  // ORDENS
+  if(activeTab === "ordens"){
+    let files = allPdfs.filter(p => startsWithFolder(p, ORDENS_ROOT));
+    if(query) files = files.filter(p => p.toLowerCase().includes(query));
+    files.sort((a,b)=>a.localeCompare(b,"pt-BR"));
+
+    content.innerHTML = sectionShell(
+      "Ordens de Serviço",
+      `${files.length} arquivo(s)`,
+      files.length
+        ? `<div class="grid">${files.map(pdfCard).join("")}</div>`
+        : `<div class="empty">Nenhum PDF encontrado em <b>/${escapeHtml(ORDENS_ROOT)}</b>.</div>`
+    );
+    return;
+  }
+
+  // BOLETINS (com subtabs)
+  if(activeTab === "boletins"){
+    const root = (activeBoletimSub === "tecnicos") ? BOLETINS_TECNICOS_ROOT : BOLETINS_MAO_ROOT;
+    const label = (activeBoletimSub === "tecnicos") ? "Boletins Técnicos" : "Boletins Mão de Obra";
+
+    let files = allPdfs.filter(p => startsWithFolder(p, root));
+    if(query) files = files.filter(p => p.toLowerCase().includes(query));
+    files.sort((a,b)=>a.localeCompare(b,"pt-BR"));
+
+    content.innerHTML = sectionShell(
+      label,
+      `${files.length} arquivo(s)`,
+      files.length
+        ? `<div class="grid">${files.map(pdfCard).join("")}</div>`
+        : `<div class="empty">Nenhum PDF encontrado em <b>/${escapeHtml(root)}</b>.</div>`
+    );
+    return;
+  }
 }
 
-document.querySelectorAll(".tab").forEach(b=>{
-  b.onclick=()=>{
-    document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+/** ===== Tabs (topo) ===== */
+tabs.forEach(b=>{
+  b.addEventListener("click", ()=>{
+    tabs.forEach(x=>x.classList.remove("active"));
     b.classList.add("active");
-    tab=b.dataset.tab;
+    activeTab = b.dataset.tab;
+
+    // Ao entrar em boletins, mantém subtab atual; ao sair, não precisa resetar
     render();
-  };
+  });
 });
+
+/** ===== Subtabs (boletins) ===== */
+subtabs.forEach(s=>{
+  s.addEventListener("click", ()=>{
+    subtabs.forEach(x=>x.classList.remove("active"));
+    s.classList.add("active");
+    activeBoletimSub = s.dataset.sub;
+    render();
+  });
+});
+
+/** ===== Busca ===== */
+q.addEventListener("input", ()=>render());
 
 render();
 </script>
